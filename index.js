@@ -27,6 +27,8 @@ app.message(/.*/gim, async ({ message, say, body, client }) => { // Listen for a
         },
     })
 
+    // TODO: add check for if the channel is read only 
+    
     console.log(userData)
     if (userData) {
          await app.client.chat.delete({  
@@ -39,6 +41,8 @@ app.message(/.*/gim, async ({ message, say, body, client }) => { // Listen for a
         user: message.user,
         text: `Your message has been deleted because you're banned from this channel for ${userData.reason}`
     })
+
+    
 
 
     await app.client.conversations.kick({
@@ -72,68 +76,28 @@ app.message(/.*/gim, async ({ message, say, body, client }) => { // Listen for a
 
 });
 
+app.command(/.*?/, async (args) => {
+  const { ack, payload, respond } = args
+  const { command, text, user_id, channel_id } = payload
 
+  await ack()
 
-app.command("/channelban", async ({ message, say, client, ack, command }) => {
-    await ack()
-    let text = command.text;
-    let admin = command.user_id;
-    let commands = text.split(" ");
-    let reason = commands[2]
-    let userToBan = commands[1].substring(2,13);
-    let channel = commands[0].substring(2,13);
-    let userProfile = await client.users.profile.get({
-        user: userToBan
-    })
-    let profile_photo = userProfile.profile.image_512;
-    let display_name = userProfile.profile.display_name;
+  switch (command) {
+    case '/channelban':
+        await require('./commands/channelBan')(args)
+        break;
+    case '/unban':
+        await require('./commands/unban')(args)
+        break;
+    case '/read-only':
+        await require('./commands/readOnly')(args)
+        break;
+    default:
+        await respond(`I don't know how to respond to the command ${command}`)
+  }
 
-    try {
-    const user = await prisma.user.create({
-        data: {
-            admin: admin,
-            reason: reason,
-            user: userToBan,
-            channel: channel,
-            profile_photo: profile_photo,
-            display_name: display_name,
-        },
-      });
-    } catch(e) {
-        console.log(e)
-        await client.chat.postEphemeral({
-            channel: command.channel_id,
-            user: command.user_id,
-            text: `${e}`
-        })
-    }
-});
+})
 
-app.command("/unban", async ({ message, say, client, ack, command }) => {
-    let text = command.text;
-    let admin = command.user_id;
-    let commands = text.split(" ");
-    let reason = commands[2]
-    let userToBan = commands[1].split('|')[0].replace("<@", "")
-    console.log(userToBan)
-    let channel = commands[0].split('|')[0].replace("<#", "")
-    
-    const updateUser = await prisma.user.delete({
-        where: {
-            user: userToBan,
-            channel: channel
-        }
-      });
-      await client.chat.postMessage({
-        channel: userToBan,
-        text: `You were unbanned from ${updateUser.channel}`
-      })
-});
-
-
-(async () => {
-
-    await app.start();
-
+app.start().then(() => {
     console.log("⚡️ Bolt app is running!");
-})();
+});
