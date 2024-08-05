@@ -1,7 +1,9 @@
 async function unban(args) {
      const { payload, client } = args
     const { command, user_id, text, channel_id } = payload
-
+    const { PrismaClient } = require("@prisma/client");
+    const prisma = new PrismaClient();
+    
     let admin = user_id
     let commands = text.split(" ");
     let reason = commands[2]

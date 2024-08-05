@@ -1,7 +1,9 @@
 async function channelBan(args) {
     const { payload, client } = args
     const { command, user_id, text, channel_id } = payload
-
+    const { PrismaClient } = require("@prisma/client");
+    const prisma = new PrismaClient();
+    
     const userInfo = await client.users.info({
         user: user_id
     })
@@ -10,7 +12,7 @@ async function channelBan(args) {
     let commands = text.split(" ");
     let reason = commands[2]
     let userToBan = commands[1].split('|')[0].replace("<@", "")
-    let channel = commands[1].split('|')[0].replace("<#", "")
+    let channel = commands[0].split('|')[0].replace("<#", "")
     let userProfile = await client.users.profile.get({
         user: userToBan
     })
@@ -33,7 +35,6 @@ async function channelBan(args) {
             console.log(e)
             await client.chat.postEphemeral({
                 channel: channel_id,
-                user: user_id,
                 text: `${e}`
             })
         }

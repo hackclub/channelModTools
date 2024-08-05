@@ -20,7 +20,7 @@ app.message(/.*/gim, async ({ message, say, body, client }) => { // Listen for a
     console.log(UserID)
     const channel = message.channel;
     let messageText = message.text;
-    let userData = await prisma.user.findFirst({
+    let userData = await prisma.user.findMany({
         where: {
             user: UserID,
             channel: channel
@@ -45,23 +45,22 @@ app.message(/.*/gim, async ({ message, say, body, client }) => { // Listen for a
     
 
 
-    await app.client.conversations.kick({
-        channel: channel,
-        user: UserID,
-        token: process.env.SLACK_USER_TOKEN
-    })
+    // await app.client.conversations.kick({
+    //     channel: channel,
+    //     user: UserID,
+    //     token: process.env.SLACK_USER_TOKEN
+    // })
     messageText = `> ${messageText}`
+    console.log("mirroring message")
+    let mirrorChannel = "C06T9MYV543"
     await client.chat.postMessage({
-        channel: channel,
-        text: messageText,
-        username: userData.display_name,
-        icon_url: userData.profile_photo,
-        
+        channel: mirrorChannel,
+        text: messageText
     })
     
     try {
         await client.chat.postMessage({
-            channel: userData.user,
+            channel: mirrorChannel,
             text: `:wave_pikachu_2: Your message was deleted because ${userData.reason}`,
         })
 
