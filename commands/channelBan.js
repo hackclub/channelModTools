@@ -20,6 +20,11 @@ async function channelBan(args) {
     let display_name = userProfile.profile.display_name;
 
     if (isAdmin) {
+        await client.chat.postEphemeral({
+            channel: `${channel_id}`,
+            user: `${user_id}`,
+            text: `${commands[1]} has been banned from ${commands[0]}`
+        })
         try {
             const user = await prisma.user.create({
                 data: {
