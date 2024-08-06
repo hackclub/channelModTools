@@ -15,12 +15,11 @@ const app = new App({
 });
 
 app.message(/.*/gim, async ({ message, say, body, client }) => { // Listen for all messages (/.*/gim is a regex)    await say("hello") 
-   
     UserID = message.user;
     console.log(UserID)
     const channel = message.channel;
     let messageText = message.text;
-    let userData = await prisma.user.findMany({
+    let userData = await prisma.user.findFirst({
         where: {
             user: UserID,
             channel: channel
@@ -55,7 +54,7 @@ app.message(/.*/gim, async ({ message, say, body, client }) => { // Listen for a
     let mirrorChannel = "C06T9MYV543"
     await client.chat.postMessage({
         channel: mirrorChannel,
-        text: messageText
+        text: `${message.user}`
     })
     
     try {
