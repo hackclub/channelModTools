@@ -2,33 +2,31 @@ async function readOnly(args) {
     const { payload, client } = args
     const { text, channel_id, user_id } = payload
     const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
+    const prisma = new PrismaClient();
     let commands = text.split(" ");
     // let userToBan = commands[1].split('|')[0].replace("<@", "")
-    
+
     let channel = commands[0].split('|')[0].replace("<#", "")
 
     // console.log(payload)
     console.log(user_id)
 
-    if (!text) {
-        await client.chat.postEphemeral({
+    if (!text)
+        return await client.chat.postEphemeral({
             user: user_id,
             channel: channel_id,
             text: `Please provide a channel ID!`
         })
-        return;
-    } else {
 
-        let addChannel = await prisma.channel.create({
-            data : {
-                
-            }
-        })
+    await prisma.channel.create({
+        data: {
+
+        }
+    })
 
 
-        
-//  update primsa for channel with readOnly: true 
+
+    //  update primsa for channel with readOnly: true 
     let dbChannel = await prisma.channels.findFirst({
         where: {
             id: channel
@@ -63,7 +61,7 @@ const prisma = new PrismaClient();
         })
     }
     return;
-}
+
 }
 
 module.exports = readOnly;
