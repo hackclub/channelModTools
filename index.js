@@ -54,7 +54,9 @@ app.message(/.*/gim, async ({ message, say, body, client }) => { // Listen for a
     let mirrorChannel = "C06T9MYV543"
     await client.chat.postMessage({
         channel: mirrorChannel,
-        text: `${message.user}`
+        text: `${messageText} \n messaged deleted in <#${channel}>`,
+        username: userData.display_name,
+        icon_url: userData.profile_photo
     })
     
     try {
