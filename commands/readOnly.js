@@ -10,7 +10,12 @@ async function readOnly(args) {
 
     // console.log(payload)
     console.log(user_id)
-
+    
+    if (!isAdmin) return await client.chat.postEphemeral({
+        channel: `${channel_id}`,
+        user: `${user_id}`,
+        text: "Only admins can run this command"
+    })
     if (!text)
         return await client.chat.postEphemeral({
             user: user_id,
@@ -20,7 +25,8 @@ async function readOnly(args) {
 
     await prisma.channel.create({
         data: {
-
+            readOnly: true,
+            channelID: channel_id,
         }
     })
 

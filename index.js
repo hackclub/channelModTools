@@ -35,23 +35,19 @@ app.message(/.*/gim, async ({ message, say, body, client }) => { // Listen for a
         ts: message.ts,
         token: process.env.SLACK_USER_TOKEN
     })
-    await client.chat.postEphemeral({
+    await client.chat.postMessage({
         channel: message.channel,
         user: message.user,
         text: `Your message has been deleted because you're banned from this channel for ${userData.reason}`
     })
-
-    
-
-
     // await app.client.conversations.kick({
-    //     channel: channel,
-    //     user: UserID,
-    //     token: process.env.SLACK_USER_TOKEN
-    // })
+    //      channel: channel,
+    //      user: UserID,
+    //      token: process.env.SLACK_USER_TOKEN
+    //  })
     messageText = `> ${messageText}`
     console.log("mirroring message")
-    let mirrorChannel = "C06T9MYV543"
+    let mirrorChannel = process.env.MIRRORCHANNEL
     await client.chat.postMessage({
         channel: mirrorChannel,
         text: `${messageText} \n messaged deleted in <#${channel}>`,
@@ -60,13 +56,15 @@ app.message(/.*/gim, async ({ message, say, body, client }) => { // Listen for a
     })
     
     try {
-        await client.chat.postMessage({
+        await client.chat.postEphemeral({
             channel: mirrorChannel,
+            user: UserID,
             text: `:wave_pikachu_2: Your message was deleted because ${userData.reason}`,
         })
 
     } catch (e) {
         await say(`${e}`);
+        console.log("error here")
     }
   
     }

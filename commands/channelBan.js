@@ -24,11 +24,14 @@ async function channelBan(args) {
         user: `${user_id}`,
         text: "Only admins can run this command"
     })
-    await client.chat.postEphemeral({
-        channel: `${channel_id}`,
-        user: `${user_id}`,
+    try {
+    await client.chat.postMessage({
+        channel: `C07FL3G62LF`,
         text: `${commands[1]} has been banned from ${commands[0]}`
     })
+} catch (e) {
+    console.log(e);
+}
     try {
         await prisma.user.create({
             data: {
@@ -47,6 +50,15 @@ async function channelBan(args) {
             text: `${e}`
         })
     }
+    try {
+        await client.chat.postEphemeral({
+            channel: `${channel_id}`,
+            user: `${user_id}`,
+            text: `${commands[1]} has been banned from ${commands[0]}`
+        })
+    } catch (e) {
+        console.log(e)
+    } 
 
 }
 
