@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,21 +8,21 @@ datasource db {
 }
 
 model User {
-  id      Int     @id @default(autoincrement())
-  channel String?
-  display_name String? 
+  id            Int       @id @default(autoincrement())
+  channel       String?
+  display_name  String?
   profile_photo String?
-  user    String?
-  reason  String?
-  admin   String?
-  time_nlp String?
-  time_banned DateTime?
-  channels Channel[]
+  user          String?
+  reason        String?
+  admin         String?
+  time_nlp      String?
+  time_banned   DateTime?
+  channels      Channel[] @relation("ChannelToUser")
 }
 
 model Channel {
-  id      Int     @id @default(autoincrement())
-  readOnly Boolean
+  id        Int     @id @default(autoincrement())
+  readOnly  Boolean
   channelID String
-  users   User[]
+  users     User[]  @relation("ChannelToUser")
 }

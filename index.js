@@ -19,8 +19,6 @@ app.message(/.*/gim, async ({ message, say, body, client }) => { // Listen for a
     console.log(UserID)
     const channel = message.channel;
     let messageText = message.text;
-    // let profile_photo = userProfile.profile.image_512;
-    // let display_name = userProfile.profile.display_name;
     let userData = await prisma.user.findFirst({
         where: {
             user: UserID,
@@ -46,16 +44,21 @@ app.message(/.*/gim, async ({ message, say, body, client }) => { // Listen for a
         ts: message.ts,
         token: process.env.SLACK_USER_TOKEN
     })
+    try {
+        await app.client.conversations.kick({
+             channel: channel,
+             user: UserID,
+             token: process.env.SLACK_USER_TOKEN
+         })
+        } catch (e) {
+            console.log("kicking failed")
+        }
     // await client.chat.postMessage({
     //     channel: message.channel,
     //     user: message.user,
     //     text: `Your message has been deleted because you're banned from this channel for ${userData.reason}`
     // })
-    // await app.client.conversations.kick({
-    //      channel: channel,
-    //      user: UserID,
-    //      token: process.env.SLACK_USER_TOKEN
-    //  })
+    
     messageText = `> ${messageText}`
     console.log("mirroring message")
     let mirrorChannel = process.env.MIRRORCHANNEL
@@ -65,7 +68,7 @@ app.message(/.*/gim, async ({ message, say, body, client }) => { // Listen for a
         username: userData.display_name,
         icon_url: userData.profile_photo
     })
-    
+h    
     try {
         await client.chat.postEphemeral({
             channel: mirrorChannel,

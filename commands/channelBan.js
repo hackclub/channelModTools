@@ -16,7 +16,7 @@ async function channelBan(args) {
     let reason = commands[2]
     let userToBan = commands[0].split('|')[0].replace("<@", "")
     let channel = commands[1].split('|')[0].replace("<#", "")
-   let time = chrono.parse(command[3])
+   let time = chrono.parse(`${commands[3]}`)
 
     console.log(time)
     let userProfile = await client.users.profile.get({
