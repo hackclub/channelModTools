@@ -30,6 +30,11 @@ async function channelBan(args) {
         user: `${user_id}`,
         text: "Only admins can run this command"
     })
+    else if (!reason) return await client.chat.postEphemeral({
+        channel: `${channel_id}`,
+        user: `${user_id}`,
+        text: `Reasons are required`
+    })
     try {
     await client.chat.postMessage({
         channel: `C07FL3G62LF`,
