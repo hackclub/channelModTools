@@ -19,6 +19,8 @@ app.message(/.*/gim, async ({ message, say, body, client }) => { // Listen for a
     console.log(UserID)
     const channel = message.channel;
     let messageText = message.text;
+    // let profile_photo = userProfile.profile.image_512;
+    // let display_name = userProfile.profile.display_name;
     let userData = await prisma.user.findFirst({
         where: {
             user: UserID,
@@ -26,20 +28,29 @@ app.message(/.*/gim, async ({ message, say, body, client }) => { // Listen for a
         },
     })
 
-    // TODO: add check for if the channel is read only 
-    
     console.log(userData)
     if (userData) {
-         await app.client.chat.delete({  
+
+        if (message.files && message.files.length > 0) {
+            const fileId = message.files[0].id
+            const fileInfo = await client.files.info({ file: fileId });
+            console.log(fileInfo.file.url_private)
+            console.log(fileId)
+            console.log(message.files)
+        } else {
+            console.log("no file found")
+        }
+
+        await app.client.chat.delete({  
         channel: channel,
         ts: message.ts,
         token: process.env.SLACK_USER_TOKEN
     })
-    await client.chat.postMessage({
-        channel: message.channel,
-        user: message.user,
-        text: `Your message has been deleted because you're banned from this channel for ${userData.reason}`
-    })
+    // await client.chat.postMessage({
+    //     channel: message.channel,
+    //     user: message.user,
+    //     text: `Your message has been deleted because you're banned from this channel for ${userData.reason}`
+    // })
     // await app.client.conversations.kick({
     //      channel: channel,
     //      user: UserID,

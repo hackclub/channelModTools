@@ -2,6 +2,7 @@
   "dependencies": {
     "@prisma/client": "^5.16.1",
     "@slack/bolt": "^3.19.0",
+    "chrono-node": "^1.4.9",
     "dotenv": "^16.4.5",
     "puppeteer": "^22.12.1"
   },

@@ -18,6 +18,8 @@ model User {
   user    String?
   reason  String?
   admin   String?
+  time_nlp String?
+  time_banned DateTime?
   channels Channel[]
 }
 

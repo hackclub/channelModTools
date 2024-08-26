@@ -1,3 +1,6 @@
+const chrono = require('chrono-node');
+
+
 async function channelBan(args) {
     const { payload, client } = args
     const { command, user_id, text, channel_id } = payload
@@ -11,8 +14,11 @@ async function channelBan(args) {
     let admin = user_id;
     let commands = text.split(" ");
     let reason = commands[2]
-    let userToBan = commands[1].split('|')[0].replace("<@", "")
-    let channel = commands[0].split('|')[0].replace("<#", "")
+    let userToBan = commands[0].split('|')[0].replace("<@", "")
+    let channel = commands[1].split('|')[0].replace("<#", "")
+   let time = chrono.parse(command[3])
+
+    console.log(time)
     let userProfile = await client.users.profile.get({
         user: userToBan
     })
@@ -27,7 +33,7 @@ async function channelBan(args) {
     try {
     await client.chat.postMessage({
         channel: `C07FL3G62LF`,
-        text: `${commands[1]} has been banned from ${commands[0]}`
+        text: `<@${[userToBan]}> has been banned from <#${channel}> for ${reason}`
     })
 } catch (e) {
     console.log(e);
@@ -41,6 +47,7 @@ async function channelBan(args) {
                 channel: channel,
                 profile_photo: profile_photo,
                 display_name: display_name,
+                // time_nlp: time
             },
         });
     } catch (e) {
@@ -54,7 +61,7 @@ async function channelBan(args) {
         await client.chat.postEphemeral({
             channel: `${channel_id}`,
             user: `${user_id}`,
-            text: `${commands[1]} has been banned from ${commands[0]}`
+            text: `${[userToBan]} has been banned from ${channel} for ${reason}`
         })
     } catch (e) {
         console.log(e)
