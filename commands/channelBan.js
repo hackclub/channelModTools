@@ -3,7 +3,7 @@ const chrono = require('chrono-node');
 
 async function channelBan(args) {
     const { payload, client } = args
-    const { command, user_id, text, channel_id } = payload
+    const { user_id, text, channel_id } = payload
     const { PrismaClient } = require("@prisma/client");
     const prisma = new PrismaClient();
 
@@ -36,13 +36,13 @@ async function channelBan(args) {
         text: `Reasons are required`
     })
     try {
-    await client.chat.postMessage({
-        channel: `C07FL3G62LF`,
-        text: `<@${[userToBan]}> has been banned from <#${channel}> for ${reason}`
-    })
-} catch (e) {
-    console.log(e);
-}
+        await client.chat.postMessage({
+            channel: `C07FL3G62LF`,
+            text: `<@${[userToBan]}> has been banned from <#${channel}> for ${reason}`
+        })
+    } catch (e) {
+        console.log(e);
+    }
     try {
         await prisma.user.create({
             data: {

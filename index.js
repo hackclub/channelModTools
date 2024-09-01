@@ -8,8 +8,7 @@ const app = new App({
     signingSecret: process.env.SLACK_SIGNING_SECRET,
     socketMode: true,
     appToken: process.env.SLACK_APP_TOKEN,
-    // Socket Mode doesn't listen on a port, but in case you want your app to respond to OAuth,
-    // you still need to listen on some port!
+    // Using socket mode, however we still want for it to reply to OAuth
     port: process.env.PORT || 3000,
 });
 
@@ -24,24 +23,13 @@ app.message(/.*/gim, async ({ message, say, body, client }) => { // Listen for a
         },
     })
 
-    console.log(userData)
     if (!userData) return;
-
-    if (message.files && message.files.length > 0) {
-        const fileId = message.files[0].id
-        const fileInfo = await client.files.info({ file: fileId });
-        console.log(fileInfo.file.url_private)
-        console.log(fileId)
-        console.log(message.files)
-    } else {
-        console.log("no file found")
-    }
 
     await app.client.chat.delete({  
         channel: channel,
         ts: message.ts,
         token: process.env.SLACK_USER_TOKEN
-    })
+    });
     try {
         await app.client.conversations.kick({
             channel: channel,
@@ -57,15 +45,15 @@ app.message(/.*/gim, async ({ message, say, body, client }) => { // Listen for a
 //     text: `Your message has been deleted because you're banned from this channel for ${userData.reason}`
 // })
 
-messageText = `> ${messageText}`
-console.log("mirroring message")
-let mirrorChannel = process.env.MIRRORCHANNEL
-await client.chat.postMessage({
-    channel: mirrorChannel,
-    text: `${messageText} \n messaged deleted in <#${channel}>`,
-    username: userData.display_name,
-    icon_url: userData.profile_photo
-})
+    messageText = `> ${messageText}`
+    console.log("mirroring message")
+    let mirrorChannel = process.env.MIRRORCHANNEL;
+    await client.chat.postMessage({
+        channel: mirrorChannel,
+        text: `${messageText}\nMessaged deleted in <#${channel}>`,
+        username: userData.display_name,
+        icon_url: userData.profile_photo
+    });
 
     try {
         await client.chat.postEphemeral({
@@ -73,10 +61,8 @@ await client.chat.postMessage({
             user: userID,
             text: `:wave_pikachu_2: Your message was deleted because ${userData.reason}`,
         })
-
     } catch (e) {
-        await say(`${e}`);
-        console.log("error here")
+        await say(`An error occured: ${e}`);
     }
 
 
