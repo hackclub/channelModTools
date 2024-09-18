@@ -1,76 +1,61 @@
 const chrono = require('chrono-node');
+const { getPrisma } = require('../utils/prismaConnector');
 
 
 async function channelBan(args) {
-    const { payload, client } = args
-    const { user_id, text, channel_id } = payload
-    const { PrismaClient } = require("@prisma/client");
-    const prisma = new PrismaClient();
+    const { payload, client } = args;
+    const { user_id, text, channel_id } = payload;
+    const prisma = getPrisma();
 
-    const userInfo = await client.users.info({
-        user: user_id
-    })
+    const userInfo = await client.users.info({ user: user_id });
     const isAdmin = userInfo.user.is_admin;
-    let admin = user_id;
-    let commands = text.split(" ");
-    let reason = commands[2]
-    let userToBan = commands[0].split('|')[0].replace("<@", "")
-    let channel = commands[1].split('|')[0].replace("<#", "")
-   let time = chrono.parse(`${commands[3]}`)
+    const commands = text.split(" ");
+    const reason = commands[2];
+    const userToBan = commands[0].split('|')[0].replace("<@", "");
+    const channel = commands[1].split('|')[0].replace("<#", "");
+    //TODO: Add temporary channel banning
+    const time = chrono.parse(`${commands[3]}`);
 
-    console.log(time)
-    let userProfile = await client.users.profile.get({
-        user: userToBan
-    })
-    let profile_photo = userProfile.profile.image_512;
-    let display_name = userProfile.profile.display_name;
+    const userProfile = await client.users.profile.get({ user: userToBan });
+    const profilePhoto = userProfile.profile.image_512;
+    const displayName = userProfile.profile.display_name;
 
-    if (!isAdmin) return await client.chat.postEphemeral({
-        channel: `${channel_id}`,
-        user: `${user_id}`,
-        text: "Only admins can run this command"
-    })
-    else if (!reason) return await client.chat.postEphemeral({
-        channel: `${channel_id}`,
-        user: `${user_id}`,
-        text: `Reasons are required`
-    })
+    const errors = []
+    if (!isAdmin) errors.push("Only admins can run this command.");
+    if (!reason) errors.push("A reason is required.")
+
+    if (errors) 
+        return await client.chat.postEphemeral({ channel: `${channel_id}`, user: `${user_id}`, text: errors.join("\n") });
+
+
     try {
         await client.chat.postMessage({
             channel: `C07FL3G62LF`,
             text: `<@${[userToBan]}> has been banned from <#${channel}> for ${reason}`
-        })
-    } catch (e) {
-        console.log(e);
-    }
-    try {
+        });
+
         await prisma.user.create({
             data: {
-                admin: admin,
+                admin: user_id,
                 reason: reason,
                 user: userToBan,
                 channel: channel,
-                profile_photo: profile_photo,
-                display_name: display_name,
-                // time_nlp: time
-            },
+                profile_photo: profilePhoto,
+                display_name: displayName,
+            }
         });
-    } catch (e) {
-        console.log(e)
-        await client.chat.postEphemeral({
-            channel: channel_id,
-            text: `${e}`
-        })
-    }
-    try {
+
         await client.chat.postEphemeral({
             channel: `${channel_id}`,
             user: `${user_id}`,
             text: `${[userToBan]} has been banned from ${channel} for ${reason}`
-        })
+        });
     } catch (e) {
-        console.log(e)
-    } 
+        await client.chat.postEphemeral({
+            channel: channel_id,
+            text: `An error occured: ${e}`
+        });
+    }
 
 }
 
