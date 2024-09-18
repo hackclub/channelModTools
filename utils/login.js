@@ -18,8 +18,7 @@ const hackclubSignup = async (user_email) => {
 
     // Fake passowrd
     // Fill out the signup form
-   await page.locator('input[type="email"]').fill("arav+hi@hackclub.com");
-   await page.locator('input[type="password"]').fill("Doodle18@12")
+
 
  await page.locator('button[type="submit"]').click();
 
