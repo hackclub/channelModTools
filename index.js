@@ -2,110 +2,89 @@ const { App, LogLevel } = require("@slack/bolt");
 require("dotenv").config();
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-let UserID;
 
 const app = new App({
     token: process.env.SLACK_BOT_TOKEN,
     signingSecret: process.env.SLACK_SIGNING_SECRET,
     socketMode: true,
     appToken: process.env.SLACK_APP_TOKEN,
-    // Socket Mode doesn't listen on a port, but in case you want your app to respond to OAuth,
-    // you still need to listen on some port!
+    // Using socket mode, however we still want for it to reply to OAuth
     port: process.env.PORT || 3000,
 });
 
 app.message(/.*/gim, async ({ message, say, body, client }) => { // Listen for all messages (/.*/gim is a regex)    await say("hello") 
-    UserID = message.user;
-    console.log(UserID)
+    const userID = message.user;
     const channel = message.channel;
     let messageText = message.text;
     let userData = await prisma.user.findFirst({
         where: {
-            user: UserID,
+            user: userID,
             channel: channel
         },
     })
 
-    console.log(userData)
-    if (userData) {
+    if (!userData) return;
 
-        if (message.files && message.files.length > 0) {
-            const fileId = message.files[0].id
-            const fileInfo = await client.files.info({ file: fileId });
-            console.log(fileInfo.file.url_private)
-            console.log(fileId)
-            console.log(message.files)
-        } else {
-            console.log("no file found")
-        }
-
-        await app.client.chat.delete({  
+    await app.client.chat.delete({  
         channel: channel,
         ts: message.ts,
         token: process.env.SLACK_USER_TOKEN
-    })
+    });
     try {
         await app.client.conversations.kick({
-             channel: channel,
-             user: UserID,
-             token: process.env.SLACK_USER_TOKEN
-         })
-        } catch (e) {
-            console.log("kicking failed")
-        }
-    // await client.chat.postMessage({
-    //     channel: message.channel,
-    //     user: message.user,
-    //     text: `Your message has been deleted because you're banned from this channel for ${userData.reason}`
-    // })
-    
+            channel: channel,
+            user: userID,
+            token: process.env.SLACK_USER_TOKEN
+        })
+    } catch (e) {
+        console.log("kicking failed")
+    }
+// await client.chat.postMessage({
+//     channel: message.channel,
+//     user: message.user,
+//     text: `Your message has been deleted because you're banned from this channel for ${userData.reason}`
+// })
+
     messageText = `> ${messageText}`
     console.log("mirroring message")
-    let mirrorChannel = process.env.MIRRORCHANNEL
+    let mirrorChannel = process.env.MIRRORCHANNEL;
     await client.chat.postMessage({
         channel: mirrorChannel,
-        text: `${messageText} \n messaged deleted in <#${channel}>`,
+        text: `${messageText}\nMessaged deleted in <#${channel}>`,
         username: userData.display_name,
         icon_url: userData.profile_photo
-    })
-h    
+    });
+
     try {
         await client.chat.postEphemeral({
             channel: mirrorChannel,
-            user: UserID,
+            user: userID,
             text: `:wave_pikachu_2: Your message was deleted because ${userData.reason}`,
         })
-
     } catch (e) {
-        await say(`${e}`);
-        console.log("error here")
+        await say(`An error occured: ${e}`);
     }
-  
-    }
-
-    // const isArchived = (await checkChannel).channel.is_archived;
 
 
 });
 
-app.command(/.*?/, async (args) => {
-  const { ack, payload, respond } = args
-  const { command, text, user_id, channel_id } = payload
+app.command(/.*?/, async (ack, { command }, respond) => {
 
   await ack()
 
   switch (command) {
     case '/channelban':
-        await require('./commands/channelBan')(args)
+        await require('./commands/channelBan')(args);
         break;
     case '/unban':
-        await require('./commands/unban')(args)
+        await require('./commands/unban')(args);
         break;
     case '/read-only':
-        await require('./commands/readOnly')(args)
+        await require('./commands/readOnly')(args);
         break;
     default:
-        await respond(`I don't know how to respond to the command ${command}`)
+        await respond(`I don't know how to respond to the command ${command}`);
+        break;
   }
 
 })

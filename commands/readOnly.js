@@ -1,34 +1,37 @@
+const { PrismaClient } = require("@prisma/client");
+const { getPrisma } = require("../utils/prismaConnector");
+
+
 async function readOnly(args) {
-    const { payload, client } = args
-    const { text, channel_id, user_id } = payload
-    const { PrismaClient } = require("@prisma/client");
-    const prisma = new PrismaClient();
-    let commands = text.split(" ");
-    // let userToBan = commands[1].split('|')[0].replace("<@", "")
-
-    let channel = commands[0].split('|')[0].replace("<#", "")
-
-    // console.log(payload)
-    console.log(user_id)
+    const { payload, client } = args;
+    const { text, channel_id, user_id } = payload;
+    const prisma = getPrisma();
+    const commands = text.split(" ");
+    const channel = commands[0].split('|')[0].replace("<#", "");
     
-    if (!isAdmin) return await client.chat.postEphemeral({
-        channel: `${channel_id}`,
-        user: `${user_id}`,
-        text: "Only admins can run this command"
-    })
+
+    const errors = [];
+    if (!isAdmin) errors.push("Only admins can run this command.");
     if (!text)
         return await client.chat.postEphemeral({
             user: user_id,
             channel: channel_id,
-            text: `Please provide a channel ID!`
-        })
+            text: ``
+        });
+
+    if (errors.length > 0)
+        return await client.chat.postEphemeral({
+            channel: `${channel_id}`,
+            user: `${user_id}`,
+            text: errors.join("\n")
+        });
 
     await prisma.channel.create({
         data: {
             readOnly: true,
             channelID: channel_id,
         }
-    })
+    });
 
 
 
@@ -39,35 +42,19 @@ async function readOnly(args) {
         }
     })
 
-    if (dbChannel.readOnly === true) {
+    if (dbChannel.readOnly) {
         await prisma.channels.update({
-            where: {
-                id: channel
-            },
-            data: {
-                readOnly: false
-            }
-        })
-        await client.chat.postMessage({
-            channel: channel,
-            text: `Channel is no longer read only`
-        })
+            where: { id: channel },
+            data: { readOnly: false }
+        });
+        await client.chat.postMessage({ channel: channel, text: `Channel is no longer read only` });
     } else {
         await prisma.channels.update({
-            where: {
-                id: channel
-            },
-            data: {
-                readOnly: true
-            }
-        })
-        await client.chat.postMessage({
-            channel: channel,
-            text: `Channel is now read only`
-        })
+            where: { id: channel },
+            data: { readOnly: true }
+        });
+        await client.chat.postMessage({ channel: channel, text: `Channel is now read only` });
     }
-    return;
-
 }
 
 module.exports = readOnly;

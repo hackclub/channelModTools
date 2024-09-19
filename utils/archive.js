@@ -8,8 +8,6 @@ const app = new App({
     // port: 3008
 });
 
-const { sleep } = require('./utils/sleep')
-
 let archiveList = [
     'C078K46G9NU'
 ]
