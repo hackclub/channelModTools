@@ -23,15 +23,15 @@ async function channelBan(args) {
     const errors = []
     if (!isAdmin) errors.push("Only admins can run this command.");
     if (!reason) errors.push("A reason is required.")
-
-    if (errors) 
-        return await client.chat.postEphemeral({ channel: `${channel_id}`, user: `${user_id}`, text: errors.join("\n") });
-
-
+        
+        if (errors.length > 0)
+            return await client.chat.postEphemeral({ channel: `${channel_id}`, user: `${user_id}`, text: errors.join("\n") });
+        
+    
     try {
         await client.chat.postMessage({
             channel: `C07FL3G62LF`,
-            text: `<@${[userToBan]}> has been banned from <#${channel}> for ${reason}`
+            text: `<@${userToBan}> has been banned from <#${channel}> for ${reason}`
         });
 
         await prisma.user.create({
@@ -46,13 +46,15 @@ async function channelBan(args) {
         });
 
         await client.chat.postEphemeral({
-            channel: `${channel_id}`,
-            user: `${user_id}`,
-            text: `${[userToBan]} has been banned from ${channel} for ${reason}`
+            channel: channel_id,
+            user: user_id,
+            text: `<@${userToBan}> has been banned from <#${channel}> for ${reason}`,
+            mrkdwn: true
         });
     } catch (e) {
         await client.chat.postEphemeral({
             channel: channel_id,
+            user: user_id,
             text: `An error occured: ${e}`
         });
     }
