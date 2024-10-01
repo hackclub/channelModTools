@@ -13,16 +13,15 @@ const app = new App({
 });
 
 app.message(/.*/gim, async ({ message, say, body, client }) => { // Listen for all messages (/.*/gim is a regex)    await say("hello") 
-    if (message.subtype === "bot_message" || !message.user) return;
     const userID = message.user;
     const channel = message.channel;
     let messageText = message.text;
     let userData = await prisma.user.findFirst({
-        where: {  
+        where: {
             user: userID,
             channel: channel
         },
-    });
+    })
 
     if (!userData) return;
 
@@ -69,26 +68,24 @@ app.message(/.*/gim, async ({ message, say, body, client }) => { // Listen for a
 
 });
 
-app.command(/.*?/, async (args) => {
+app.command(/.*?/, async (ack, { command }, respond) => {
 
-    const { ack, command, respond } = args;
+  await ack()
 
-    await ack();
-
-    switch (command.command) {
-        case '/channelban':
-            await require('./commands/channelBan')(args);
-            break;
-        case '/unban':
-            await require('./commands/unban')(args);
-            break;
-        case '/read-only':
-            await require('./commands/readOnly')(args);
-            break;
-        default:
-            await respond(`I don't know how to respond to the command ${command.command}`);
-            break;
-    }
+  switch (command) {
+    case '/channelban':
+        await require('./commands/channelBan')(args);
+        break;
+    case '/unban':
+        await require('./commands/unban')(args);
+        break;
+    case '/read-only':
+        await require('./commands/readOnly')(args);
+        break;
+    default:
+        await respond(`I don't know how to respond to the command ${command}`);
+        break;
+  }
 
 })
 
