@@ -26,3 +26,11 @@ model Channel {
   channelID String
   users     User[]  @relation("ChannelToUser")
 }
+
+model Bans {
+  id Int @id @default(autoincrement())
+  user String?
+  reason String?
+  admin String?
+  time DateTime?
+}

@@ -40,11 +40,12 @@ app.message(/.*/gim, async ({ message, say, body, client }) => { // Listen for a
     } catch (e) {
         console.log("kicking failed")
     }
-// await client.chat.postMessage({
-//     channel: message.channel,
-//     user: message.user,
-//     text: `Your message has been deleted because you're banned from this channel for ${userData.reason}`
-// })
+    
+await client.chat.postMessage({
+    channel: message.channel,
+    user: message.user,
+    text: `Your message has been deleted because you're banned from this channel for ${userData.reason}`
+})
 
     messageText = `> ${messageText}`
     console.log("mirroring message")
