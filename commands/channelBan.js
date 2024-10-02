@@ -20,10 +20,14 @@ async function channelBan(args) {
     const profilePhoto = userProfile.profile.image_512;
     const displayName = userProfile.profile.display_name;
 
+
     const errors = []
     if (!isAdmin) errors.push("Only admins can run this command.");
     if (!reason) errors.push("A reason is required.")
-        
+    if (!userToBan) errors.push("A user is required")
+    if (!channel) errors.push("A channel is required")
+
+
         if (errors.length > 0)
             return await client.chat.postEphemeral({ channel: `${channel_id}`, user: `${user_id}`, text: errors.join("\n") });
         
