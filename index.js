@@ -86,6 +86,8 @@ app.command(/.*?/, async (args) => {
         case '/read-only':
             await require('./commands/readOnly')(args);
             break;
+        case '/slowmode':
+            await require('./commands/slowmode.js')(args);
         default:
             await respond(`I don't know how to respond to the command ${command.command}`);
             break;

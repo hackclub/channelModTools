@@ -2,14 +2,34 @@ const chrono = require('chrono-node');
 const { getPrisma } = require('../utils/prismaConnector');
 
 
-async function slowMode(args) {
-    const { payload, client } = args
-    const { user_id, text, channel_id } = payload
+async function slowmode(args) {
+    const { payload, client } = args;
+    const { user_id, text, channel_id } = payload;
     const prisma = getPrisma();
+    const commands = text.split(" ");
+    const userToBan = commands[0].split('|')[0].replace("<@", "");
+    let channel = commands[1].split('|')[0].replace("<#", "");
+    const getUser = await prisma.user.deleteMany({ where: { user: userToBan, channel: channel } });
 
-    const userInfo = await client.users.info({ user: user_id });
 
-    
+    if (!userToBan || !channel || !userToBan && !channel) { 
+      await client.chat.postEphemeral({
+        channel: `${channel_id}`,
+        user: `${user_id}`,
+        text: "Invaild arugements"
+      })
+    }
+    else {
+      const updateUser = await prisma.user.deleteMany({ where: { user: userToBan, channel: channel } });
+    }
+    await client.chat.postMessage({
+      channel: userToBan,
+      text: `You were unbanned from ${channel}`
+    });
+    await client.chat.postMessage({
+      channel: process.env.MIRRORCHANNEL,
+      text: `<@${userToBan}> was unbanned from ${channel}`
+    });
 }
 
-module.exports = slowMode;
+module.exports = slowmode;

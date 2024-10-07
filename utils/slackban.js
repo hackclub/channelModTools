@@ -26,7 +26,7 @@ async function inviteGuestToSlack({ email, channels, _customMessage }) {
         },
       ],
       restricted: true,
-      channels: channels.join(','),
+      channels: "G01DBHPLK25",
     })
   
     return fetch(`https://slack.com/api/users.admin.inviteBulk`, {
@@ -35,7 +35,8 @@ async function inviteGuestToSlack({ email, channels, _customMessage }) {
       body: data,
     }).then((r) => {
       console.log(r)
-      metrics.increment('events.flow.invitetoslack', 1)
       r.json()
     })
   }
+
+inviteGuestToSlack("arav+idk@hackclub.com ", "#blahaj-and-chai")
