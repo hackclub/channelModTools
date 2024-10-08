@@ -7,10 +7,10 @@ async function listenforBannedUser(args) {
     const { user, ts, text, channel, subtype } = payload
     const prisma = getPrisma();
 
-    if (payload.subtype === "bot_message" || !payload.user) return;
-    const userID = payload.user;
-    const slackChannel = payload.channel;
-    let messageText = payload.text;
+    if (subtype === "bot_message" || !user) return;
+    const userID = user;
+    const slackChannel = channel;
+    let messageText = text;
     let userData = await prisma.user.findFirst({
         where: {  
             user: userID,
@@ -22,7 +22,7 @@ async function listenforBannedUser(args) {
 
     await client.chat.delete({  
         channel: slackChannel,
-        ts: payload.ts,
+        ts: ts,
         token: process.env.SLACK_USER_TOKEN
     });
     try {
@@ -36,8 +36,8 @@ async function listenforBannedUser(args) {
     }
     
 await client.chat.postMessage({
-    channel: payload.channel,
-    user: payload.user,
+    channel: channel,
+    user: user,
     text: `Your message has been deleted because you're banned from this channel for ${userData.reason}`
 })
 
