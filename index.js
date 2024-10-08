@@ -21,6 +21,9 @@ app.event('message', async (args) => {
     const listenforBannedUser  = await require("./interactions/listenforBannedUser.js");
     await listenforBannedUser(args)
 
+    const startSlowMode  = await require("./interactions/startSlowMode.js");
+    await startSlowMode(args)
+
 });
 
 app.command(/.*?/, async (args) => {

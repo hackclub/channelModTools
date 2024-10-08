@@ -26,7 +26,7 @@ async function unban(args) {
     });
     await client.chat.postMessage({
       channel: process.env.MIRRORCHANNEL,
-      text: `<@${userToBan}> was unbanned from <${channel}>`,
+      text: `<@${userToBan}> was unbanned from <#${channel}>`,
       mrkdwn: true
         });
 }

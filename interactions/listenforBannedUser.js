@@ -18,7 +18,7 @@ async function listenforBannedUser(args) {
         },
     });
 
-    if (!userData) return;
+    if (!userData) return; 
 
     await client.chat.delete({  
         channel: slackChannel,
