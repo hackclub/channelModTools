@@ -17,6 +17,7 @@ model User {
   admin         String?
   time_nlp      String?
   time_banned   DateTime?
+  number_of_messages String?
   channels      Channel[] @relation("ChannelToUser")
 }
 
@@ -33,4 +34,21 @@ model Bans {
   reason String?
   admin String?
   time DateTime?
+}
+
+model Slowmode {
+  id Int @id @default(autoincrement())
+  channel String?
+  locked  Boolean? @default(false)
+  messageCount Int?
+  time Int?
+}
+
+model SlowUsers {
+    id Int @id @default(autoincrement())
+    user String?
+    count Int?
+    bannned Boolean? @default(false)
+    whitelist Boolean? @default(false)
+
 }
