@@ -8,21 +8,16 @@ async function readOnly(args) {
     const { text, channel_id, user_id } = payload;
     const prisma = getPrisma();
     const commands = text.split(" ");
+    const userInfo = await client.users.info({ user: user_id });
     const channel = commands[0].split('|')[0].replace("<#", "");
     const isAdmin = (await userInfo).user.is_admin;
 
-    if (!isAdmin) return;
 
     const errors = []
     if (!isAdmin) errors.push("Only admins can run this command.");
-    
+    if (!channel) errors.push("You need to give a channel to make it read only");
 
-    if (!text)
-        return await client.chat.postEphemeral({
-            user: user_id,
-            channel: channel_id,
-            text: ``
-        });
+
 
     if (errors.length > 0)
         return await client.chat.postEphemeral({
@@ -30,35 +25,44 @@ async function readOnly(args) {
             user: `${user_id}`,
             text: errors.join("\n")
         });
-        const isReadOnly = await prisma.Channel.findFirst({
-            where: {
-                id: channel,
-                readOnly: true
-            }
-        })
-        
-      
-        
 
-try {
-    if (!isReadOnly) { 
-await prisma.Channel.create({
-    data: {
-        id: channel,
-        readOnly: true,
-        allowlist: []
-    }
-})
-    } else {
+
+    const isReadOnly = await prisma.Channel.findFirst({
+        where: {
+            id: channel,
+            readOnly: true
+        }
+    })
+
+
+    try {
+        if (!isReadOnly) {
+            await prisma.Channel.create({
+                data: {
+                    id: channel,
+                    readOnly: true,
+                    allowlist: ["U01MPHKFZ7S"]
+                }
+            })
+            await client.chat.postMessage({
+                channel: channel,
+                text: `<#${channel}> was made read-only by <@${user_id}>`
+            })
+
+        } else {
             await prisma.Channel.delete({
-                where:{
+                where: {
                     id: channel
                 }
-                })
+            })
+            await client.chat.postMessage({
+                channel: channel,
+                text: `<#${channel}> was made no longer read-only by <@${user_id}>`
+            })
+        }
+    } catch (e) {
+        console.log(e);
     }
-} catch(e) {
-    console.log(e);
-}
 
 
 
