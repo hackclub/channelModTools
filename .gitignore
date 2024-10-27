@@ -4,3 +4,4 @@ node_modules
 
 # Package logs
 pnpm-lock.yaml
+prisma/migrations/20241008185016_migrate_dev/migration.sql

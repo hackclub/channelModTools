@@ -18,11 +18,12 @@ app.event('message', async (args) => {
     const { event } = body
     const { type, subtype, user, channel, ts, text } = event
 
-    const listenforBannedUser  = await require("./interactions/listenforBannedUser.js");
-    await listenforBannedUser(args)
-
     const startSlowMode  = await require("./interactions/startSlowMode.js");
-    await startSlowMode(args)
+    await startSlowMode(args);
+    const listenforBannedUser  = await require("./interactions/listenforBannedUser.js");
+    await listenforBannedUser(args);
+    const cleanupChannel = await require("./interactions/cleanupChannel.js");
+    await cleanupChannel(args);
 
 });
 

@@ -18,14 +18,12 @@ model User {
   time_nlp      String?
   time_banned   DateTime?
   number_of_messages String?
-  channels      Channel[] @relation("ChannelToUser")
-}
+  }
 
 model Channel {
-  id        Int     @id @default(autoincrement())
+  id        String    @id
   readOnly  Boolean
-  channelID String
-  users     User[]  @relation("ChannelToUser")
+  allowlist     String[]
 }
 
 model Bans {
@@ -46,9 +44,13 @@ model Slowmode {
 
 model SlowUsers {
     id Int @id @default(autoincrement())
+    channel String?
     user String?
     count Int?
-    bannned Boolean? @default(false)
+    banned Boolean? @default(false) // Fixed typo here from 'bannned' to 'banned'
     whitelist Boolean? @default(false)
 
+    @@unique([channel, user]) 
 }
+
+

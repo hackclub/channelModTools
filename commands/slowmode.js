@@ -7,18 +7,29 @@ async function slowmode(args) {
     const { user_id, text, channel_id } = payload;
     const prisma = getPrisma();
     const commands = text.split(" ");
-    let channel = commands[0].split('|')[0].replace("<#", "");
-    let count = commands[1];
-    let time = commands[2];
+    const userInfo = await client.users.info({ user: user_id });
+    const isAdmin = userInfo.user.is_admin;
+    const channel = commands[0].split('|')[0].replace("<#", "");
+    let count = Number(commands[1]);
+    let time = Number(commands[2]);
 
-    let createSlowMode = await prisma.slowmode.upsert({
+    if (!isAdmin) return;
+
+  
+   const createSlowMode = await prisma.Slowmode.create({
+      data: {
       channel: channel,
       locked: true,
       time: time,
       messageCount: count,
+      }
     })
+
+    // TODO: send message in firehouse logs
+    // TODO: cancel slowmode
+
  
- 
+    
   }
 
 module.exports = slowmode;

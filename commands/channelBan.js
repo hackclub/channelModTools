@@ -34,8 +34,8 @@ async function channelBan(args) {
     
     try {
         await client.chat.postMessage({
-            channel: `C07FL3G62LF`,
-            text: `<@${userToBan}> has been banned from <#${channel}> for ${reason}`
+            channel: process.env.MIRRORCHANNEL,
+            text: `<@${user_id}> banned <@${userToBan}> from <#${channel}> for ${reason}`
         });
 
         await prisma.user.create({
