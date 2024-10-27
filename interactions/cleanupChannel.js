@@ -7,8 +7,8 @@ async function cleanupChannel(args) {
     const { client, payload } = args
     const { user, ts, thread_ts, text, channel, subtype } = payload
     const prisma = getPrisma();
-    
-    console.log(payload);
+    const userInfo = await client.users.info({ user: user_id });
+    const isAdmin = (await userInfo).user.is_admin;
 
 
     const getChannel = await prisma.Channel.findFirst({
@@ -26,9 +26,8 @@ async function cleanupChannel(args) {
           },
         })
 
-
     if (!getChannel) return;
-
+    if (isAdmin) return;
     if (thread_ts) return;
 
     if (!allowlist) {
@@ -42,19 +41,11 @@ async function cleanupChannel(args) {
             token: process.env.SLACK_USER_TOKEN,
         })
     }
-
-
     
     await client.chat.postMessage({
         channel: channel,
         text: "Read only"
     })
-
-
-
-
-
 }
-
 
  module.exports = cleanupChannel;

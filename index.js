@@ -46,6 +46,9 @@ app.command(/.*?/, async (args) => {
         case '/slowmode':
             await require('./commands/slowmode.js')(args);
             break;
+        case '/whitelist':
+            await require('./commands/whitelist.js')(args);
+            break;         
         default:
             await respond(`I don't know how to respond to the command ${command.command}`);
             break;
