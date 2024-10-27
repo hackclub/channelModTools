@@ -44,13 +44,7 @@ async function whitelist(args) {
                     allowlist: ["U01MPHKFZ7S"]
                 }
             })
-
-            await client.chat.postEphemeral({
-                channel: channel,
-                text: `<#${channel}> was made read-only by <@${user_id}>`
-            })
-            
-            await client.chat.postEphemeral({
+            await client.chat.postMessage({
                 channel: channel,
                 text: `<#${channel}> was made read-only by <@${user_id}>`
             })
