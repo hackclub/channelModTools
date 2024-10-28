@@ -27,7 +27,6 @@ async function cleanupChannel(args) {
         })
 
     if (!getChannel) return;
-    if (isAdmin) return;
     if (thread_ts) return;
 
     if (!allowlist) {
