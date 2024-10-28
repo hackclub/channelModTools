@@ -1,5 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
 const { getPrisma } = require("../utils/prismaConnector");
+require("dotenv").config();
 
 
 
@@ -45,8 +46,12 @@ async function readOnly(args) {
                 }
             })
             await client.chat.postMessage({
-                channel: channel,
+                channel: process.env.MIRRORCHANNEL,
                 text: `<#${channel}> was made read-only by <@${user_id}>`
+            })
+            await client.chat.postEphemeral({
+                channel: channel,
+                text: `<${channel} has been made read only`
             })
 
         } else {
@@ -56,7 +61,7 @@ async function readOnly(args) {
                 }
             })
             await client.chat.postMessage({
-                channel: channel,
+                channel: process.env.MIRRORCHANNEL,
                 text: `<#${channel}> was made no longer read-only by <@${user_id}>`
             })
         }

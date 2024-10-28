@@ -7,7 +7,7 @@ async function cleanupChannel(args) {
     const { client, payload } = args
     const { user, ts, thread_ts, text, channel, subtype } = payload
     const prisma = getPrisma();
-    const userInfo = await client.users.info({ user: user_id });
+    const userInfo = await client.users.info({ user: user });
     const isAdmin = (await userInfo).user.is_admin;
 
 
@@ -32,7 +32,7 @@ async function cleanupChannel(args) {
 
     if (!allowlist) {
         await client.chat.postMessage({
-            channel: channel,
+            channel: user,
             text: "You can't post here"
         })
         await client.chat.delete({
@@ -41,11 +41,6 @@ async function cleanupChannel(args) {
             token: process.env.SLACK_USER_TOKEN,
         })
     }
-    
-    await client.chat.postMessage({
-        channel: channel,
-        text: "Read only"
-    })
 }
 
  module.exports = cleanupChannel;
