@@ -15,6 +15,7 @@ const app = new App({
 app.event('message', async (args) => {
     // begin the firehose
     const { body, client } = args
+    console.log(body);
     const { event } = body
     const { type, subtype, user, channel, ts, text } = event
 

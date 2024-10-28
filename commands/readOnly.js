@@ -51,6 +51,7 @@ async function readOnly(args) {
             })
             await client.chat.postEphemeral({
                 channel: channel,
+                user: user, 
                 text: `<${channel} has been made read only`
             })
 
