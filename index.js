@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 const app = new App({
     token: process.env.SLACK_BOT_TOKEN,
     signingSecret: process.env.SLACK_SIGNING_SECRET,
-    socketMode: true,
+    socketMode: false,
     appToken: process.env.SLACK_APP_TOKEN,
     // Using socket mode, however we still want for it to reply to OAuth
     port: process.env.PORT || 3000,
@@ -57,6 +57,6 @@ app.command(/.*?/, async (args) => {
 
 })
 
-app.start().then(() => {
+app.start(3000).then(() => {
     console.log("⚡️ Bolt app is running!");
 });
