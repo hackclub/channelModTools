@@ -1,4 +1,10 @@
 {
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "npx nodemon index.js",
+    "fmt": "npx prettier --write '**/*.js'"
+  },
   "dependencies": {
     "@prisma/client": "^5.16.1",
     "@slack/bolt": "^3.19.0",

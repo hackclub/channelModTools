@@ -31,6 +31,7 @@ async function cleanupChannel(args) {
 
     if (!allowlist) {
         await client.chat.postMessage({
+            user: user,
             channel: user,
             text: "You can't post here"
         })
@@ -40,12 +41,6 @@ async function cleanupChannel(args) {
             token: process.env.SLACK_USER_TOKEN,
         })
     }
-
-
-
-
-
-
 }
 
 

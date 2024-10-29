@@ -35,7 +35,7 @@ async function listenforBannedUser(args) {
         console.log("kicking failed")
     }
     
-await client.chat.postMessage({
+await client.chat.postEphemeral({
     channel: channel,
     user: user,
     text: `Your message has been deleted because you're banned from this channel for ${userData.reason}`
