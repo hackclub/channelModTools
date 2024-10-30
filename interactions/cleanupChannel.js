@@ -29,6 +29,7 @@ async function cleanupChannel(args) {
     if (!getChannel) return;
     if (thread_ts) return;
 
+    if (allowlist == "U07NGBJUDRD") return; 
     if (!allowlist || subtype == "bot_message") {
         await client.chat.postEphemeral({
             channel: channel,
