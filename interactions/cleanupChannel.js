@@ -31,6 +31,7 @@ async function cleanupChannel(args) {
 
     if (!allowlist) {
         await client.chat.postEphemeral({
+            channel: channel,
             user: user,
             text: "This channel is read-only! If you're replying to something, send a message in a thread."
         })
