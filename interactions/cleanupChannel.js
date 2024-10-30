@@ -30,7 +30,7 @@ async function cleanupChannel(args) {
     if (thread_ts) return;
 
     if (!allowlist) {
-        await client.chat.postMessage({
+        await client.chat.postEphemeral({
             user: user,
             channel: user,
             text: "You can't post here"
