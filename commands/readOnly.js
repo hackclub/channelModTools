@@ -42,7 +42,7 @@ async function readOnly(args) {
                 data: {
                     id: channel,
                     readOnly: true,
-                    allowlist: ["U01MPHKFZ7S"]
+                    allowlist: []
                 }
             })
             await client.chat.postMessage({
