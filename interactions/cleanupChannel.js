@@ -33,7 +33,7 @@ async function cleanupChannel(args) {
         await client.chat.postEphemeral({
             user: user,
             channel: user,
-            text: "You can't post here"
+            text: "You can't post here."
         })
         await client.chat.delete({
             channel: channel,
