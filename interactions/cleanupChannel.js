@@ -29,14 +29,7 @@ async function cleanupChannel(args) {
     if (thread_ts) return;
 
     if (!allowlist) {
-        if (bot_id) {
-            await client.chat.delete({
-                channel: channel,
-                ts: ts,
-                token: process.env.SLACK_USER_TOKEN,
-            })
-            return;
-        }
+       
         await client.chat.postEphemeral({
             channel: channel,
             user: user,
