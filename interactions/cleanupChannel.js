@@ -19,6 +19,7 @@ async function cleanupChannel(args) {
 
     const allowlist = await prisma.Channel.findFirst({
         where: {
+            id: channel,
             allowlist: {
               has: user,
             },
