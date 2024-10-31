@@ -5,7 +5,7 @@ require("dotenv").config();
 
 async function cleanupChannel(args) {
     const { client, payload } = args
-    const { user, ts, thread_ts, text, channel, subtype } = payload
+    const { user, ts, thread_ts, text, channel, subtype, bot_id } = payload
     const prisma = getPrisma();
     const userInfo = await client.users.info({ user: user });
     const isAdmin = (await userInfo).user.is_admin;
@@ -21,7 +21,7 @@ async function cleanupChannel(args) {
     const allowlist = await prisma.Channel.findFirst({
         where: {
             allowlist: {
-              has: user,
+              has: user || bot_id,
             },
           },
         })
@@ -29,8 +29,6 @@ async function cleanupChannel(args) {
     if (!getChannel) return;
     if (thread_ts) return;
 
-    if (subtype == "bot_message" && allowlist) return;
-    
     if (!allowlist) {
         await client.chat.postEphemeral({
             channel: channel,
