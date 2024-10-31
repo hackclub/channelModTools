@@ -43,6 +43,7 @@ async function readOnly(args) {
                     id: channel,
                     readOnly: true,
                     allowlist: [
+                        "UDK5M9Y13"
                         "U0C7B14Q3",
                         "U0266FRGP",
                         "U06UYA5GMB5",
