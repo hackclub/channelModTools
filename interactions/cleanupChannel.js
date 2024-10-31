@@ -35,6 +35,7 @@ async function cleanupChannel(args) {
                 ts: ts,
                 token: process.env.SLACK_USER_TOKEN,
             })
+            return;
         }
         await client.chat.postEphemeral({
             channel: channel,
@@ -46,7 +47,7 @@ async function cleanupChannel(args) {
             ts: ts,
             token: process.env.SLACK_USER_TOKEN,
         })
-        
+
        
     }
 }
