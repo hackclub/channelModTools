@@ -49,6 +49,11 @@ async function channelBan(args) {
             }
         });
 
+        await client.chat.postMessage({
+            channel: user,
+            text: `You've been banned from <#${channel}>. A Fire Dept (community moderator) will reach out to you shortly with the reason`
+        })
+
         await client.chat.postEphemeral({
             channel: channel_id,
             user: user_id,
