@@ -41,6 +41,12 @@ async function cleanupChannel(args) {
             user: user,
             text: "This channel is read-only! If you're replying to something, send a message in a thread."
         })
+        await client.chat.delete({
+            channel: channel,
+            ts: ts,
+            token: process.env.SLACK_USER_TOKEN,
+        })
+        
        
     }
 }
