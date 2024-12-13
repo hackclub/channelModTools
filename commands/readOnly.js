@@ -12,13 +12,14 @@ async function readOnly(args) {
     const userInfo = await client.users.info({ user: user_id });
     const channel = commands[0].split('|')[0].replace("<#", "");
     const isAdmin = (await userInfo).user.is_admin;
+    const getChannelManagers = require('../utils/isChannelManger');
 
+    
 
     const errors = []
     if (!isAdmin) errors.push("Only admins can run this command.");
     if (!channel) errors.push("You need to give a channel to make it read only");
-
-
+    if (!)
 
     if (errors.length > 0)
         return await client.chat.postEphemeral({

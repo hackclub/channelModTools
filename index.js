@@ -26,6 +26,8 @@ app.event('message', async (args) => {
 
 });
 
+
+
 app.command(/.*?/, async (args) => {
 
     const { ack, command, respond } = args;
@@ -47,7 +49,10 @@ app.command(/.*?/, async (args) => {
             break;
         case '/whitelist':
             await require('./commands/whitelist.js')(args);
-            break;         
+            break; 
+        case '/banlist':
+            await require('./commands/listofBans.js')(args);
+            break;        
         default:
             await respond(`I don't know how to respond to the command ${command.command}`);
             break;

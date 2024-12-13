@@ -20,7 +20,7 @@ async function unban(args) {
     else {
       const updateUser = await prisma.user.deleteMany({ where: { user: userToBan, channel: channel } });
     }
-    await client.chat.postMessage({
+  await client.chat.postMessage({
       channel: userToBan,
       text: `You were unbanned from <#${channel}>`
     });

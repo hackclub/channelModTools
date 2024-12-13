@@ -38,7 +38,7 @@ async function listenforBannedUser(args) {
 await client.chat.postEphemeral({
     channel: channel,
     user: user,
-    text: `Your message has been deleted because you're banned from this channel for ${userData.reason}`
+    text: `Your message has been deleted because you're banned from this channel because ${userData.reason}`
 })
 
     messageText = `> ${messageText}`
