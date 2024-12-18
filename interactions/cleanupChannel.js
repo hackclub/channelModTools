@@ -3,12 +3,6 @@ const { getPrisma } = require("../utils/prismaConnector")
 require("dotenv").config();
 // Importing exposed groups of objects
 
-import { Surfaces, Blocks, Elements, Bits, Utilities } from 'slack-block-builder';
-
-// Importing objects top-level
-
-import { Modal, Section, Actions, Button } from 'slack-block-builder';
-
 
 
 
