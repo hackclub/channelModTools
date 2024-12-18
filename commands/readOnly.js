@@ -19,7 +19,7 @@ async function readOnly(args) {
     const errors = []
     if (!isAdmin) errors.push("Only admins can run this command.");
     if (!channel) errors.push("You need to give a channel to make it read only");
-    if (!)
+
 
     if (errors.length > 0)
         return await client.chat.postEphemeral({
