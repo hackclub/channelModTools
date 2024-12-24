@@ -6,7 +6,7 @@ async function listenforBannedUser(args) {
     const { client, payload } = args
     const { user, ts, text, channel, subtype } = payload
     const prisma = getPrisma();
-
+    console.log(payload)
     if (subtype === "bot_message" || !user) return;
     const userID = user;
     const slackChannel = channel;
@@ -14,17 +14,20 @@ async function listenforBannedUser(args) {
     let userData = await prisma.user.findFirst({
         where: {  
             user: userID,
-            channel: slackChannel
         },
     });
 
     if (!userData) return; 
 
+    try {
     await client.chat.delete({  
         channel: slackChannel,
         ts: ts,
         token: process.env.SLACK_USER_TOKEN
     });
+} catch(e) {
+    console.error(e)
+}
     try {
         await client.conversations.kick({
             channel: slackChannel,
@@ -41,15 +44,15 @@ await client.chat.postEphemeral({
     text: `Your message has been deleted because you're banned from this channel because ${userData.reason}`
 })
 
-    messageText = `> ${messageText}`
-    console.log("mirroring message")
-    let mirrorChannel = process.env.MIRRORCHANNEL;
-    await client.chat.postMessage({
-        channel: mirrorChannel,
-        text: `${messageText}\nMessaged deleted in <#${channel}>`,
-        username: userData.display_name,
-        icon_url: userData.profile_photo
-    });
+    // messageText = `> ${messageText}`
+    // console.log("mirroring message")
+    // let mirrorChannel = process.env.MIRRORCHANNEL;
+    // await client.chat.postMessage({
+    //     channel: mirrorChannel,
+    //     text: `${messageText}\nMessaged deleted in <#${channel}>`,
+    //     username: userData.display_name,
+    //     icon_url: userData.profile_photo
+    // });
 
     try {
         await client.chat.postEphemeral({

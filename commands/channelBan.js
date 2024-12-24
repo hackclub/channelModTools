@@ -16,9 +16,9 @@ async function channelBan(args) {
     //TODO: Add temporary channel banning
     const time = chrono.parse(`${commands[3]}`);
 
-    const userProfile = await client.users.profile.get({ user: userToBan });
-    const profilePhoto = userProfile.profile.image_512;
-    const displayName = userProfile.profile.display_name;
+    // const userProfile = await client.users.profile.get({ user: userToBan });
+    // const profilePhoto = userProfile.profile.image_512;
+    // const displayName = userProfile.profile.display_name;
 
 
     const errors = []
@@ -44,8 +44,7 @@ async function channelBan(args) {
                 reason: reason,
                 user: userToBan,
                 channel: channel,
-                profile_photo: profilePhoto,
-                display_name: displayName,
+                
             }
         });
 

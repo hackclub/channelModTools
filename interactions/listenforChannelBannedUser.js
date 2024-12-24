@@ -41,15 +41,15 @@ await client.chat.postEphemeral({
     text: `Your message has been deleted because you're banned from this channel because ${userData.reason}`
 })
 
-    messageText = `> ${messageText}`
-    console.log("mirroring message")
-    let mirrorChannel = process.env.MIRRORCHANNEL;
-    await client.chat.postMessage({
-        channel: mirrorChannel,
-        text: `${messageText}\nMessaged deleted in <#${channel}>`,
-        username: userData.display_name,
-        icon_url: userData.profile_photo
-    });
+    // messageText = `> ${messageText}`
+    // console.log("mirroring message")
+    // let mirrorChannel = process.env.MIRRORCHANNEL;
+    // await client.chat.postMessage({
+    //     channel: mirrorChannel,
+    //     text: `${messageText}\nMessaged deleted in <#${channel}>`,
+    //     username: userData.display_name,
+    //     icon_url: userData.profile_photo
+    // });
 
     try {
         await client.chat.postEphemeral({

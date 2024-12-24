@@ -5,14 +5,13 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 
 }
 
 model User {
   id            Int       @id @default(autoincrement())
   channel       String?
-  display_name  String?
-  profile_photo String?
   user          String?
   reason        String?
   admin         String?

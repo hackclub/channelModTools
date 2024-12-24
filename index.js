@@ -6,6 +6,8 @@ const prisma = new PrismaClient();
 const app = new App({
     token: process.env.SLACK_BOT_TOKEN,
     signingSecret: process.env.SLACK_SIGNING_SECRET,
+    socketMode: true,
+    appToken: process.env.SLACK_APP_TOKEN,
     // Using socket mode, however we still want for it to reply to OAuth
     port: process.env.PORT || 3000,
 });
@@ -13,7 +15,6 @@ const app = new App({
 app.event('message', async (args) => {
     // begin the firehose
     const { body, client } = args
-    console.log(body);
     const { event } = body
     const { type, subtype, user, channel, ts, text } = event
 
@@ -21,7 +22,7 @@ app.event('message', async (args) => {
     await shushBan(args);
     const startSlowMode  = await require("./interactions/startSlowMode.js");
     await startSlowMode(args);
-    const listenforChannelBannedUser  = await require("./interactions/listenforChannelBannedUser.js");
+    const listenforChannelBannedUser  = await require("./interactions/listoenforChannelBannedUser.js");
     await listenforChannelBannedUser(args);
     const cleanupChannel = await require("./interactions/cleanupChannel.js");
     await cleanupChannel(args);
