@@ -10,13 +10,15 @@ async function whitelist(args) {
     const commands = text.split(" ");
     const userInfo = await client.users.info({ user: user_id });
     const channel = commands[0].split('|')[0].replace("<@", "");
+    const userToAdd = commands[1].split('|')[0].replace("<@", "");
     const isAdmin = (await userInfo).user.is_admin;
+
 
 
     const errors = []
     if (!isAdmin) errors.push("Only admins can run this command.");
     if (!channel) errors.push("You need to give a channel to make it read only");
-
+    if (!userToAdd) errors.push("You need to give a user to make it read only");
 
 
     if (errors.length > 0)
@@ -27,37 +29,27 @@ async function whitelist(args) {
         });
 
 
-    const isReadOnly = await prisma.Channel.findFirst({
-        where: {
-            id: channel,
-            readOnly: true
-        }
-    })
 
+        const isReadOnly = await prisma.Channel.findFirst({
+            where: {
+                id: channel,
+                readOnly: true
+            }
+        })
 
     try {
-        if (!isReadOnly) {
-            await prisma.Channel.create({
-                data: {
-                    id: channel,
-                    readOnly: true,
-                    allowlist: ["U01MPHKFZ7S"]
-                }
-            })
-            await client.chat.postMessage({
-                channel: channel,
-                text: `<#${channel}> was made read-only by <@${user_id}>`
-            })
-
-        } else {
-            await prisma.Channel.delete({
+        if (isReadOnly) {
+            await prisma.Channel.update({
                 where: {
-                    id: channel
+                    id: channel,                
+                },
+                data: {
+                    allowlist: [userToAdd]
                 }
             })
             await client.chat.postMessage({
                 channel: channel,
-                text: `<#${channel}> was made no longer read-only by <@${user_id}>`
+                text: `<@${userToAdd}> was added to <#${channel}> whitelist by <@${user_id}>`
             })
         }
     } catch (e) {
