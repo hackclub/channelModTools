@@ -22,7 +22,7 @@ app.event('message', async (args) => {
     await shushBan(args);
     const startSlowMode  = await require("./interactions/startSlowMode.js");
     await startSlowMode(args);
-    const listenforChannelBannedUser  = await require("./interactions/listoenforChannelBannedUser.js");
+    const listenforChannelBannedUser  = await require("./interactions/listenforchannelbanneduser.js");
     await listenforChannelBannedUser(args);
     const cleanupChannel = await require("./interactions/cleanupChannel.js");
     await cleanupChannel(args);
