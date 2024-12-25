@@ -9,7 +9,7 @@ const app = new App({
     // socketMode: true,
     // appToken: process.env.SLACK_APP_TOKEN,
     // Using socket mode, however we still want for it to reply to OAuth
-    port: process.env.PORT || 3000,
+    // port: process.env.PORT || 3000,
 });
 
 app.event('message', async (args) => {
@@ -17,15 +17,16 @@ app.event('message', async (args) => {
     const { body, client } = args
     const { event } = body
     const { type, subtype, user, channel, ts, text } = event
-
+  
+    const cleanupChannel = await require("./interactions/cleanupChannel.js");
+    await cleanupChannel(args);
     const shushBan = await require("./interactions/listenforBannedUser.js");
     await shushBan(args);
     const startSlowMode  = await require("./interactions/startSlowMode.js");
     await startSlowMode(args);
-    const listenforChannelBannedUser  = await require("./interactions/listenforchannelbanneduser.js");
+    const listenforChannelBannedUser  = await require("./interactions/listenforChannelBannedUser.js");
     await listenforChannelBannedUser(args);
-    const cleanupChannel = await require("./interactions/cleanupChannel.js");
-    await cleanupChannel(args);
+    
 
 });
 
@@ -44,7 +45,7 @@ app.command(/.*?/, async (args) => {
         case '/unban':
             await require('./commands/unban')(args);
             break;
-        case '/read-only':
+        case '/fs-read-only':
             await require('./commands/readOnly')(args);
             break;
         case '/slowmode':
@@ -66,6 +67,6 @@ app.command(/.*?/, async (args) => {
 
 // Start the app on the specified port
 const port = process.env.PORT || 3000; // Get the port from environment variable or default to 3000
-app.start(port).then(() => {
+app.start().then(() => {
     console.log(`⚡️ Bolt app is running on port ${port}!`);
 });

@@ -1,10 +1,6 @@
 const readOnly = require("../commands/readOnly");
 const { getPrisma } = require("../utils/prismaConnector")
 require("dotenv").config();
-// Importing exposed groups of objects
-
-
-// Importing objects top-level
 
 
 
@@ -41,12 +37,16 @@ async function cleanupChannel(args) {
     if (thread_ts) return;
 
     if (!allowlist) {
+        try {
+        await client.chat.delete({
+            channel: channel,
+            ts: ts,
+            token: process.env.SLACK_USER_TOKEN,
+        })
+    } catch(e) {
+        console.log(e)
+    }
         if (bot_id) {
-            await client.chat.delete({
-                channel: channel,
-                ts: ts,
-                token: process.env.SLACK_USER_TOKEN,
-            })
             return;
         }
         
