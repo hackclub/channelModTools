@@ -27,7 +27,7 @@ async function shushBan(args) {
 
 
         if (errors.length > 0)
-            return await client.chat.postEphemeral({ channel: `${channel_id}`, user: `${user_id}`, text: errors.join("\n") });
+            return await client.chat.postEphemeral({  user: `${user_id}`, text: errors.join("\n") });
         
     
     try {

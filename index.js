@@ -9,7 +9,7 @@ const app = new App({
     // socketMode: true,
     // appToken: process.env.SLACK_APP_TOKEN,
     // Using socket mode, however we still want for it to reply to OAuth
-    // port: process.env.PORT || 3000,
+    port: process.env.PORT || 3000,
 });
 
 app.event('message', async (args) => {
@@ -45,28 +45,31 @@ app.command(/.*?/, async (args) => {
         case '/unban':
             await require('./commands/unban')(args);
             break;
-        case '/fs-read-only':
+        case '/read-only':
             await require('./commands/readOnly')(args);
             break;
         case '/slowmode':
             await require('./commands/slowmode.js')(args);
             break;
         case '/whitelist':
-            await require('./commands/whitelist.js')(args);
+        await require('./commands/whitelist.js')(args);
             break; 
         case '/shush':
             await require('./commands/shush.js')(args);
-            break;        
+            break;  
+        case '/unshush':
+            await require('./commands/unshush.js')(args);
+            break;       
         default:
             await respond(`I don't know how to respond to the command ${command.command}`);
             break;
-    }
+}
 
 })
 
 
 // Start the app on the specified port
 const port = process.env.PORT || 3000; // Get the port from environment variable or default to 3000
-app.start().then(() => {
+app.start(port).then(() => {
     console.log(`⚡️ Bolt app is running on port ${port}!`);
 });
