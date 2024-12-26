@@ -48,7 +48,7 @@ async function shushBan(args) {
 
         await client.chat.postMessage({
             channel: userToBan,
-            text: `You've been banned from talking in all slack channels for a short peroid of time. A FD member will reach out to you shortly`
+            text: `You've been banned from talking in all slack channels for a short period of time. A FD member will reach out to you shortly`
         })
 
         await client.chat.postEphemeral({
