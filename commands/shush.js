@@ -36,7 +36,7 @@ async function shushBan(args) {
             text: `<@${user_id}> banned <@${userToBan}> > from all slack channels for ${reason}`
         });
 
-        await prisma.user.create({
+        await prisma.bans.create({
             data: {
                 admin: user_id,
                 reason: reason,

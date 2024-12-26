@@ -11,7 +11,7 @@ async function listenforBannedUser(args) {
     const userID = user;
     const slackChannel = channel;
     let messageText = text;
-    let userData = await prisma.user.findFirst({
+    let userData = await prisma.bans.findFirst({
         where: {  
             user: userID,
         },

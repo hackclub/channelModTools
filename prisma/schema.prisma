@@ -20,6 +20,8 @@ model User {
   number_of_messages String?
   }
 
+
+
 model Channel {
   id        String    @id
   readOnly  Boolean
