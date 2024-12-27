@@ -10,6 +10,8 @@ async function cleanupChannel(args) {
     const userInfo = await client.users.info({ user: user });
     const isAdmin = userInfo.user.is_admin;
 
+    if (isAdmin) return;
+    
     const getChannel = await prisma.Channel.findFirst({
         where: {
             id: channel,
