@@ -33,7 +33,7 @@ async function whitelist(args) {
         const isReadOnly = await prisma.Channel.findFirst({
             where: {
                 id: channel,
-        
+                readOnly: true
             }
         })
 
@@ -44,9 +44,7 @@ async function whitelist(args) {
                     id: channel,                
                 },
                 data: {
-                    allowlist:{
-                        push: userToAdd
-                    } 
+                    allowlist: ["U01MPHKFZ7S"]
                 }
             })
             await client.chat.postMessage({
