@@ -39,6 +39,10 @@ async function whitelist(args) {
 
     try {
         if (isReadOnly) {
+            await client.chat.postMessage({
+                channel: channel,
+                text: `<@${userToAdd}> was added to <#${channel}> whitelist by <@${user_id}>`
+            })
             await prisma.Channel.update({
                 where: {
                     id: channel,                
@@ -47,10 +51,7 @@ async function whitelist(args) {
                     allowlist: ["U01MPHKFZ7S"]
                 }
             })
-            await client.chat.postMessage({
-                channel: channel,
-                text: `<@${userToAdd}> was added to <#${channel}> whitelist by <@${user_id}>`
-            })
+           
         }
     } catch (e) {
         console.log(e);
