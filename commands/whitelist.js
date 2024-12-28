@@ -9,8 +9,8 @@ async function whitelist(args) {
     const prisma = getPrisma();
     const commands = text.split(" ");
     const userInfo = await client.users.info({ user: user_id });
-    const channel = commands[0].split('|')[0].replace("<@", "");
-    const userToAdd = commands[1].split('|')[0].replace("<@", "");
+    const channel = commands[1].split('|')[0].replace("<#", "");
+    const userToAdd = commands[0].split('|')[0].replace("<@", "");
     const isAdmin = (await userInfo).user.is_admin;
 
 
@@ -29,40 +29,42 @@ async function whitelist(args) {
         });
 
 
-
-        const isReadOnly = await prisma.Channel.findFirst({
+        const getChannel = await prisma.Channel.findFirst({
             where: {
                 id: channel,
-                readOnly: true
+                readOnly: true,
             }
-        })
-
-    console.log("this is whitelisting")
-
-    try {
-        if (isReadOnly) {
-            await client.chat.postMessage({
-                channel: process.env.MIRROR_CHANNEL,
-                text: `<@${userToAdd}> was added to <#${channel}> whitelist by <@${user_id}>`
-            })
+        });
+        
+        console.log(getChannel)
+        if (getChannel) {
+            console.log("this is whitelisting")
+            console.log("I am trying")
+            try {
             await prisma.Channel.update({
                 where: {
                     id: channel,                
                 },
                 data: {
-                    allowlist: ["U01MPHKFZ7S"]
+                    allowlist: {
+                        push: userToAdd
+                    }
                 }
             })
-           
+        } catch(e) {
+            console.log("Error:", e)
         }
-    } catch (e) {
-        console.log(e);
-    }
+            const finalResult = await prisma.Channel.findFirst({
+                where: {
+                    id: channel,
+                    readOnly: true,
+                }
+            });
+            console.log("I did it")
+            console.log(`Added ${userToAdd} to ${channel}:`, finalResult)
 
-
-
-
-
+    
+        }
 }
 
 

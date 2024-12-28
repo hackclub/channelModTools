@@ -6,7 +6,6 @@ async function listenforBannedUser(args) {
     const { client, payload } = args
     const { user, ts, text, channel, subtype } = payload
     const prisma = getPrisma();
-    console.log(payload)
     if (subtype === "bot_message" || !user) return;
     const userID = user;
     const slackChannel = channel;

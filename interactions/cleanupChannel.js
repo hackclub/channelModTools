@@ -18,6 +18,7 @@ async function cleanupChannel(args) {
             readOnly: true,
         }
     });
+    console.log(getChannel)
 
     const allowlist = await prisma.Channel.findFirst({
         where: {
