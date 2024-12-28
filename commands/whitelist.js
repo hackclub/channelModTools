@@ -37,6 +37,8 @@ async function whitelist(args) {
             }
         })
 
+    console.log("this is whitelisting")
+
     try {
         if (isReadOnly) {
             await client.chat.postMessage({
