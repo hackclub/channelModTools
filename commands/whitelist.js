@@ -44,7 +44,9 @@ async function whitelist(args) {
                     id: channel,                
                 },
                 data: {
-                    allowlist: [userToAdd]
+                    allowlist:{
+                        push: userToAdd
+                    } 
                 }
             })
             await client.chat.postMessage({
