@@ -40,7 +40,7 @@ async function whitelist(args) {
     try {
         if (isReadOnly) {
             await client.chat.postMessage({
-                channel: channel,
+                channel: process.env.MIRROR_CHANNEL,
                 text: `<@${userToAdd}> was added to <#${channel}> whitelist by <@${user_id}>`
             })
             await prisma.Channel.update({
