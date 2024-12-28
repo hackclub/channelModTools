@@ -18,7 +18,7 @@ async function unshush(args) {
       })
     }
     else {
-      const updateUser = await prisma.user.deleteMany({ where: { user: userToBan } });
+      const updateUser = await prisma.Bans.deleteMany({ where: { user: userToBan } });
     }
   await client.chat.postMessage({
       channel: userToBan,
