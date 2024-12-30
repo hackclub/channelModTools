@@ -62,7 +62,7 @@ app.command(/.*?/, async (args) => {
         case '/slowmode':
             await require('./commands/slowmode.js')(args);
             break;
-        case '/whixtelist':
+        case '/whitelist':
             await require('./commands/whitelist.js')(args);
             break;
         case '/shush':
