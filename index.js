@@ -12,21 +12,32 @@ const app = new App({
     port: process.env.PORT || 3000,
 });
 
+app.event("channel_created", async ({ event, client }) => {
+    try {
+        const channelId = event.channel.id;
+        await client.conversations.join({ channel: channelId });
+    } catch (e) {
+        console.log(e)
+    }
+})
+
+
+
 app.event('message', async (args) => {
     // begin the firehose
     const { body, client } = args
     const { event } = body
     const { type, subtype, user, channel, ts, text } = event
-  
+
     const cleanupChannel = await require("./interactions/cleanupChannel.js");
     await cleanupChannel(args);
     const shushBan = await require("./interactions/listenforBannedUser.js");
     await shushBan(args);
-    const startSlowMode  = await require("./interactions/startSlowMode.js");
+    const startSlowMode = await require("./interactions/startSlowMode.js");
     await startSlowMode(args);
-    const listenforChannelBannedUser  = await require("./interactions/listenforChannelBannedUser.js");
+    const listenforChannelBannedUser = await require("./interactions/listenforChannelBannedUser.js");
     await listenforChannelBannedUser(args);
-    
+
 
 });
 
@@ -51,19 +62,19 @@ app.command(/.*?/, async (args) => {
         case '/slowmode':
             await require('./commands/slowmode.js')(args);
             break;
-        case '/whitelist':
-        await require('./commands/whitelist.js')(args);
-            break; 
+        case '/whixtelist':
+            await require('./commands/whitelist.js')(args);
+            break;
         case '/shush':
             await require('./commands/shush.js')(args);
-            break;  
+            break;
         case '/unshush':
             await require('./commands/unshush.js')(args);
-            break;       
+            break;
         default:
             await respond(`I don't know how to respond to the command ${command.command}`);
             break;
-}
+    }
 
 })
 
