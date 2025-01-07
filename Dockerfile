@@ -19,4 +19,4 @@ COPY . .
 
 EXPOSE 3000
 
-CMD ["npx", "run", "start"]
+RUN npm run start
