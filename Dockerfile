@@ -19,4 +19,5 @@ COPY . .
 
 EXPOSE 3000
 
-RUN npm run start
+# Change RUN to CMD to start the application when the container runs
+CMD ["npm", "run", "start"]
