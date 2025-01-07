@@ -15,7 +15,7 @@ COPY prisma prisma
 
 RUN npm install
 
-COPY ..
+COPY . .
 
 EXPOSE 3000
 
