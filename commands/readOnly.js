@@ -46,7 +46,7 @@ async function readOnly(args) {
                     id: channel,
                     readOnly: true,
                     allowlist: [
-                      ""
+                      `${user_id}`
                     ]
                 }
             })
