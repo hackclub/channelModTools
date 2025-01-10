@@ -19,8 +19,7 @@ async function readOnly(args) {
     
 
     const errors = []
-    if (!channelManagers.includes(user_id)) errors.push("Only Channel Mangers or Admins can run this");
-    if (!isAdmin) errors.push("Only admins can run this command.");
+    if (!isAdmin || !channelManagers.includes(user_id)) errors.push("Only admins can run this command.");
     if (!channel) errors.push("You need to give a channel to make it read only");
 
 

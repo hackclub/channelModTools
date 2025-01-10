@@ -1,7 +1,7 @@
 const { App, LogLevel, ExpressReceiver } = require("@slack/bolt");
 require("dotenv").config();
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
+const { getPrisma } = require('./utils/prismaConnector.js');
+const prisma = getPrisma();
 const express = require('express')
 
 
