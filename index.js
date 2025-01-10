@@ -31,7 +31,9 @@ app.event("channel_created", async ({ event, client }) => {
         const channelId = event.channel.id;
         await client.conversations.join({ channel: channelId });
     } catch (e) {
-})
+        app.logger.error(e)
+    } 
+});
 
 
 
@@ -94,5 +96,5 @@ app.command(/.*?/, async (args) => {
 // Start the app on the specified port
 const port = process.env.PORT || 3000; // Get the port from environment variable or default to 3000
 app.start(port).then(() => {
-    LogLevel.info(`Bolt is running on ${port}`)
+    app.logger.info(`Bolt is running on ${port}`)
 });
