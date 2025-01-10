@@ -1,10 +1,9 @@
-const { App, LogLevel } = require("@slack/bolt");
+const { App, LogLevel, ExpressReceiver } = require("@slack/bolt");
 require("dotenv").config();
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const express = require('express')
 
-const { ExpressReceiver } = require('@slack/bolt')
 
 const receiver = new ExpressReceiver({
   signingSecret: process.env.SLACK_SIGNING_SECRET,
