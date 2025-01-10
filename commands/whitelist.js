@@ -60,9 +60,18 @@ async function whitelist(args) {
                     readOnly: true,
                 }
             });
+        
             console.log("I did it")
             console.log(`Added ${userToAdd} to ${channel}:`, finalResult)
 
+            try {
+                await client.chat.postMessage({
+                    channel: mirrorChannel,
+                    text: `${user_id} added ${userToAdd} to the whitelist for ${channel}`,
+                })
+            } catch (e) {
+                await say(`An error occured: ${e}`);
+            }
     
         }
 }
