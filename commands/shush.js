@@ -41,6 +41,7 @@ async function shushBan(args) {
                 admin: user_id,
                 reason: reason,
                 user: userToBan,
+                th
                 // profile_photo: profilePhoto,
                 // display_name: displayName,
             }

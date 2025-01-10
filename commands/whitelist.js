@@ -1,10 +1,12 @@
 const { PrismaClient } = require("@prisma/client");
 const { getPrisma } = require("../utils/prismaConnector");
+const getChannelManagers = require("../utils/isChannelManger");
+require("dotenv").config();
 
 
 
 async function whitelist(args) {
-    const { payload, client } = args;
+    const { payload, client, logger } = args;
     const { text, channel_id, user_id } = payload;
     const prisma = getPrisma();
     const commands = text.split(" ");
@@ -12,7 +14,7 @@ async function whitelist(args) {
     const channel = commands[1].split('|')[0].replace("<#", "");
     const userToAdd = commands[0].split('|')[0].replace("<@", "");
     const isAdmin = (await userInfo).user.is_admin;
- const channelManagers = await getChannelManagers(channel_id);
+    const channelManagers = await getChannelManagers(channel_id);
 
     
 
@@ -25,7 +27,7 @@ async function whitelist(args) {
     if (errors.length > 0)
         return await client.chat.postEphemeral({
             channel: `${channel_id}`,
-            user: `${user_id}`,
+        user: `${user_id}`,
             text: errors.join("\n")
         });
 
@@ -67,11 +69,11 @@ async function whitelist(args) {
 
             try {
                 await client.chat.postMessage({
-                    channel: mirrorChannel,
-                    text: `${user_id} added ${userToAdd} to the whitelist for ${channel}`,
+                    channel: process.env.MIRRORCHANNEL,
+                    text: `<@${user_id}> added <@${userToAdd}> to the whitelist for <#${channel}>`,
                 })
             } catch (e) {
-                await say(`An error occured: ${e}`);
+                console.error(e)
             }
     
         }

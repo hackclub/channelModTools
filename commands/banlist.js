@@ -11,29 +11,20 @@ async function banList(args) {
 
     const userInfo = await client.users.info({ user: user_id });
     const isAdmin = userInfo.user.is_admin;
-    const commands = text.split(" ");
-    const reason = commands[2]
-    const userToCheck = commands[0].split('|')[0].replace("<@", "");
-    const channeltoCheck = commands[1].split('|')[0].replace("<#", "");
-=
+   
 
 
     const errors = []
     if (!isAdmin) errors.push("Only admins can run this command.");
-    if (!reason) errors.push("A reason is required.")
-    if (!userToBan) errors.push("A user is required")
-    if (!channel) errors.push("A channel is required")
     
-    const channelBans = await prisma.User.findMany();
     
-    await client.chat.postMessage({
-        channel: process.env.MIRRORCHANNEL,
-        text: `${channelBans}`
+    const channelBans = await prisma.User.findMany()
+    const shushBans = await prisma.Bans.findMany({
+        select: { user}
     })
-
+    console.log(channelBans)
+    console.log(shushBans)
     
-
-
 
 }
 
