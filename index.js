@@ -2,15 +2,30 @@ const { App, LogLevel } = require("@slack/bolt");
 require("dotenv").config();
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const express = require('express')
+
+const { ExpressReceiver } = require('@slack/bolt')
+
+const receiver = new ExpressReceiver({
+  signingSecret: process.env.SLACK_SIGNING_SECRET,
+})
+
+
+
+
 
 const app = new App({
     token: process.env.SLACK_BOT_TOKEN,
     signingSecret: process.env.SLACK_SIGNING_SECRET,
+    receiver,
     // socketMode: true,
     // appToken: process.env.SLACK_APP_TOKEN,
     // Using socket mode, however we still want for it to reply to OAuth
     port: process.env.PORT || 3000,
 });
+
+receiver.router.use(express.json())
+receiver.router.get('/', require('./endpoints/index'))
 
 app.event("channel_created", async ({ event, client }) => {
     try {
