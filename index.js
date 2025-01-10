@@ -26,6 +26,11 @@ const app = new App({
 receiver.router.use(express.json())
 receiver.router.get('/', require('./endpoints/index'))
 
+await app.client.chat.postMessage({
+    channel: process.env.MIRRORCHANNEL,
+    text: `Firehose is online again!`
+})
+
 app.event("channel_created", async ({ event, client }) => {
     try {
         const channelId = event.channel.id;
