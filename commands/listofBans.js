@@ -1,6 +1,7 @@
 const chrono = require('chrono-node');
 const { getPrisma } = require('../utils/prismaConnector');
 const channelBan = require('./channelBan');
+require("dotenv").config();
 
 
 async function banList(args) {
@@ -14,8 +15,7 @@ async function banList(args) {
     const reason = commands[2]
     const userToCheck = commands[0].split('|')[0].replace("<@", "");
     const channeltoCheck = commands[1].split('|')[0].replace("<#", "");
-    const channelBans = await prisma.User.findMany();
-
+=
 
 
     const errors = []
@@ -23,8 +23,13 @@ async function banList(args) {
     if (!reason) errors.push("A reason is required.")
     if (!userToBan) errors.push("A user is required")
     if (!channel) errors.push("A channel is required")
-
-    console.log(channelBans);
+    
+    const channelBans = await prisma.User.findMany();
+    
+    await client.chat.postMessage({
+        channel: process.env.MIRRORCHANNEL,
+        text: `${channelBans}`
+    })
 
     
 
