@@ -26,7 +26,7 @@ const app = new App({
 receiver.router.use(express.json())
 receiver.router.get('/', require('./endpoints/index'))
 
-await app.client.chat.postMessage({
+app.client.chat.postMessage({
     channel: process.env.MIRRORCHANNEL,
     text: `Firehose is online again!`
 })
