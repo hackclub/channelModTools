@@ -96,5 +96,5 @@ app.command(/.*?/, async (args) => {
 // Start the app on the specified port
 const port = process.env.PORT || 3000; // Get the port from environment variable or default to 3000
 app.start(port).then(() => {
-    console.log(`⚡️ Bolt app is running on port ${port}!`);
+    app.logger.info(`Bolt is running on ${port}`)
 });
