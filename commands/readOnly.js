@@ -1,6 +1,8 @@
 const { PrismaClient } = require("@prisma/client");
 const { getPrisma } = require("../utils/prismaConnector");
 require("dotenv").config();
+const getChannelManagers = require("../utils/isChannelManger");
+
 
 
 
@@ -12,11 +14,12 @@ async function readOnly(args) {
     const userInfo = await client.users.info({ user: user_id });
     const channel = commands[0].split('|')[0].replace("<#", "");
     const isAdmin = (await userInfo).user.is_admin;
-    const getChannelManagers = require('../utils/isChannelManger');
+    const channelManagers = await getChannelManagers(channel_id);
 
     
 
     const errors = []
+    if (!channelManagers.includes(user_id)) errors.push("Only Channel Mangers or Admins can run this");
     if (!isAdmin) errors.push("Only admins can run this command.");
     if (!channel) errors.push("You need to give a channel to make it read only");
 

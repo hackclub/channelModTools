@@ -2,7 +2,7 @@ require("dotenv").config();
 
 module.exports = async function getChannelManagers(channel) {
   const myHeaders = new Headers();
-  myHeaders.append("Cookie", `d=${process.env.SLACK_USER_COOKIE}`);
+  myHeaders.append("Cookie", `d=${process.env.SLACK_COOKIE}`);
 
   const formdata = new FormData();
   formdata.append("token", process.env.SLACK_BROWSER_TOKEN);
