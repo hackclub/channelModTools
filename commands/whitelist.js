@@ -17,7 +17,7 @@ async function whitelist(args) {
     
 
     const errors = []
-    if (!isAdmin || !channelManagers.includes(user_id)) errors.push("Only admins can run this command.");
+    if (!isAdmin && !channelManagers.includes(user_id)) errors.push("Only admins can run this command.");
     if (!channel) errors.push("You need to give a channel to make it read only");
     if (!userToAdd) errors.push("You need to give a user to make it read only");
 
