@@ -15,7 +15,7 @@ async function whitelist(args) {
     const userToAdd = commands[0].split('|')[0].replace("<@", "");
     const isAdmin = (await userInfo).user.is_admin;
     const channelManagers = await getChannelManagers(channel_id);
-
+    console.info(channelManagers)
     
 
     const errors = []

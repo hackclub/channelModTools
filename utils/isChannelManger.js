@@ -25,3 +25,5 @@ module.exports = async function getChannelManagers(channel) {
   if (!json.ok) return [];
   return json.role_assignments[0]?.users || [];
 };
+
+
