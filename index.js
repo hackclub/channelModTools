@@ -91,6 +91,9 @@ app.command(/.*?/, async (args) => {
         case '/unshush':
             await require('./commands/unshush.js')(args);
             break;
+        case '/purge':
+            await require('./commands/purge.js')(args)
+            break;
         default:
             await respond(`I don't know how to respond to the command ${command.command}`);
             break;
