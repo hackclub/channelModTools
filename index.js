@@ -10,16 +10,12 @@ const receiver = new ExpressReceiver({
 })
 
 
-
-
-
 const app = new App({
     token: process.env.SLACK_BOT_TOKEN,
     signingSecret: process.env.SLACK_SIGNING_SECRET,
     receiver,
-    // socketMode: true,
-    // appToken: process.env.SLACK_APP_TOKEN,
-    // Using socket mode, however we still want for it to reply to OAuth
+    socketMode: true,
+    appToken: process.env.SLACK_APP_TOKEN,
     port: process.env.PORT || 3000,
 });
 
@@ -61,6 +57,13 @@ app.event('message', async (args) => {
 
 });
 
+const handleEvent = require("./events/index.js");
+const handleAction = require("./actions/index.js");
+const handleViews = require("./views/index.js");
+
+app.event(/.*/, handleEvent); // Catch all events dynamically
+app.action(/.*/, handleAction) // Catch all actions dynamically
+app.view(/.*/, handleViews)
 
 
 app.command(/.*?/, async (args) => {
@@ -102,5 +105,5 @@ app.command(/.*?/, async (args) => {
 // Start the app on the specified port
 const port = process.env.PORT || 3000; // Get the port from environment variable or default to 3000
 app.start(port).then(() => {
-    app.logger.info(`Bolt is running on ${port}`)
+    app.logger.info(`Bolt is running on `)
 });
