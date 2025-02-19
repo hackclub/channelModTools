@@ -38,7 +38,9 @@ async function cleanupChannel(args) {
                 ts: thread_ts,
             });
             
-            const isThreadBroadcast = threadMessage.messages.some(msg => msg.subtype === 'thread_broadcast');
+            // const isThreadBroadcast = threadMessage.messages.some(msg => msg.subtype === 'thread_broadcast');
+            const isThreadBroadcast = payload.subtype === 'thread_broadcast'; // check the current msg
+
 
             if (isThreadBroadcast) {
                 await client.chat.delete({
