@@ -39,7 +39,7 @@ async function cleanupChannel(args) {
             });
             
             // const isThreadBroadcast = threadMessage.messages.some(msg => msg.subtype === 'thread_broadcast');
-            const isThreadBroadcast = payload.subtype === 'thread_broadcast'; // check the current msg
+            const isThreadBroadcast = subtype === 'thread_broadcast'; // check the current msg
 
 
             if (isThreadBroadcast) {
