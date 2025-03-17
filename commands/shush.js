@@ -15,9 +15,11 @@ async function shushBan(args) {
   // const profilePhoto = userProfile.profile.image_512;
   // const displayName = userProfile.profile.display_name;
 
+  const isSelfShush = userToBan === user_id;
   const errors = [];
-  if (!isAdmin) errors.push("Only admins can run this command.");
-  if (!reason) errors.push("A reason is required.");
+  if (!isAdmin && !isSelfShush)
+    errors.push("Non-admins can only shush themselves.");
+  if (!reason && !isSelfShush) errors.push("A reason is required.");
   if (!userToBan) errors.push("A user is required");
 
   if (errors.length > 0)
@@ -29,7 +31,9 @@ async function shushBan(args) {
   try {
     await client.chat.postMessage({
       channel: process.env.MIRRORCHANNEL,
-      text: `<@${user_id}> banned <@${userToBan}> > from all slack channels for ${reason}`,
+      text: `<@${user_id}> ${
+        isSelfShush ? "self-shushed themselves" : `banned <@${userToBan}>`
+      } from all Slack channels. ${reason ? `for ${reason}` : ""}`,
     });
 
     await prisma.bans.create({
@@ -43,17 +47,27 @@ async function shushBan(args) {
       },
     });
 
-    await client.chat.postMessage({
-      channel: userToBan,
-      text: "You've been banned from talking in all Slack channels for a short period of time. A FD member will reach out to you shortly.",
-    });
+    if (!isSelfShush) {
+      await client.chat.postMessage({
+        channel: userToBan,
+        text: "You've been banned from talking in all Slack channels for a short period of time. A FD member will reach out to you shortly.",
+      });
+    }
 
-    await client.chat.postEphemeral({
-      channel: channel_id,
-      user: user_id,
-      text: `<@${userToBan}> has been banned from all channels for ${reason}`,
-      mrkdwn: true,
-    });
+    if (isSelfShush) {
+      await client.chat.postEphemeral({
+        channel: channel_id,
+        user: user_id,
+        text: `You've been banned from talking in all Slack channels.`,
+      });
+    } else {
+      await client.chat.postEphemeral({
+        channel: channel_id,
+        user: user_id,
+        text: `<@${userToBan}> has been banned from all channels for ${reason}`,
+        mrkdwn: true,
+      });
+    }
   } catch (e) {
     await client.chat.postEphemeral({
       channel: channel_id,
