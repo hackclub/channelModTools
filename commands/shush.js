@@ -17,8 +17,7 @@ async function shushBan(args) {
 
   const isSelfShush = userToBan === user_id;
   const errors = [];
-  if (!isAdmin && !isSelfShush)
-    errors.push("Non-admins can only shush themselves.");
+  if (!isAdmin && !isSelfShush) errors.push("Non-admins can only shush themselves.");
   if (!reason && !isSelfShush) errors.push("A reason is required.");
   if (!userToBan) errors.push("A user is required");
 
@@ -29,12 +28,12 @@ async function shushBan(args) {
     });
 
   try {
-    await client.chat.postMessage({
-      channel: process.env.MIRRORCHANNEL,
-      text: `<@${user_id}> ${
-        isSelfShush ? "self-shushed themselves" : `banned <@${userToBan}>`
-      } from all Slack channels. ${reason ? `for ${reason}` : ""}`,
-    });
+    if (!isSelfShush) {
+      await client.chat.postMessage({
+        channel: process.env.MIRRORCHANNEL,
+        text: `<@${user_id}> banned <@${userToBan}> from all Slack channels. ${reason ? `for ${reason}` : ""}`,
+      });
+    }
 
     await prisma.bans.create({
       data: {
