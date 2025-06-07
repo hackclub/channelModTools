@@ -87,6 +87,7 @@ async function cleanupChannel(args) {
         console.log("User is allowed in this channel, no action taken.");
         return;
     }
+    if (text) {
     console.log("User is not allowed in this channel, proceeding to delete message:", ts);
 
     console.log(`Message found by ${user}, deleting it:`, text);
@@ -105,7 +106,8 @@ async function cleanupChannel(args) {
         user: user,
         text: "This channel is read-only! If you're replying to something, send a message in a thread.",
     });
-    ;
+}
+
     console.log("Checking if message is a file share", subtype);
 
     if (!subtype) {
