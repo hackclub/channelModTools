@@ -5,29 +5,28 @@ const prisma = getPrisma();
 const express = require('express')
 
 
-
-// const receiver = new ExpressReceiver({
-//   signingSecret: process.env.SLACK_SIGNING_SECRET,
-// })
+const receiver = new ExpressReceiver({
+  signingSecret: process.env.SLACK_SIGNING_SECRET,
+})
 
 
 const app = new App({
     token: process.env.SLACK_BOT_TOKEN,
     signingSecret: process.env.SLACK_SIGNING_SECRET,
-    // receiver,
-    socketMode: true,
+    receiver,
+    socketMode: false,
     appToken: process.env.SLACK_APP_TOKEN,
     port: process.env.PORT || 3000,
 });
 
-// receiver.router.use(express.json())
-// receiver.router.get('/', require('./endpoints/index'))
-// receiver.router.get('/ping', require('./endpoints/ping'))
+receiver.router.use(express.json())
+receiver.router.get('/', require('./endpoints/index'))
+receiver.router.get('/ping', require('./endpoints/ping'))
 
-app.logger.info("Firehose is starting up...");
-app.logger.info(`Using Prisma version: ${prisma._version}`);
-app.logger.info(`Using Slack Bolt version: ${App.version}`);
-
+app.client.chat.postMessage({
+    channel: process.env.MIRRORCHANNEL,
+    text: `Firehose is online again!`
+})
 
 app.event("channel_created", async ({ event, client }) => {
     try {
@@ -38,11 +37,6 @@ app.event("channel_created", async ({ event, client }) => {
     } 
 });
 
-
-app.client.chat.postMessage({
-    channel: process.env.MIRRORCHANNEL,
-    text: `Firehose is online again!`
-})
 
 
 app.event('message', async (args) => {
@@ -63,6 +57,14 @@ app.event('message', async (args) => {
 
 });
 
+const handleEvent = require("./events/index.js");
+const handleAction = require("./actions/index.js");
+const handleViews = require("./views/index.js");
+
+app.event(/.*/, handleEvent); // Catch all events dynamically
+app.action(/.*/, handleAction) // Catch all actions dynamically
+app.view(/.*/, handleViews)
+
 
 app.command(/.*?/, async (args) => {
 
@@ -71,25 +73,25 @@ app.command(/.*?/, async (args) => {
     await ack();
 
     switch (command.command) {
-        case '/fs-channelban':
+        case '/channelban':
             await require('./commands/channelBan')(args);
             break;
-        case '/fs-unban':
+        case '/unban':
             await require('./commands/unban')(args);
             break;
-        case '/fs-read-only':
+        case '/read-only':
             await require('./commands/readOnly')(args);
             break;
-        case '/fs-slowmode':
+        case '/slowmode':
             await require('./commands/slowmode.js')(args);
             break;
-        case '/fs-whitelist':
+        case '/whitelist':
             await require('./commands/whitelist.js')(args);
             break;
-        case '/test-shush':
+        case '/shush':
             await require('./commands/shush.js')(args);
             break;
-        case '/fs-unshush':
+        case '/unshush':
             await require('./commands/unshush.js')(args);
             break;
         case '/purge':
@@ -105,6 +107,6 @@ app.command(/.*?/, async (args) => {
 
 // Start the app on the specified port
 const port = process.env.PORT || 3000; // Get the port from environment variable or default to 3000
-app.start().then(() => {
+app.start(port).then(() => {
     app.logger.info(`Bolt is running on `)
 });
