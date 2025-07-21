@@ -1,5 +1,14 @@
-const { WebClient } = require('@slack/web-api');
 const Airtable = require('airtable');
+console.log("autoMod loaded");
+// console.log("Banned words", process.env.BANNED_WORDS);
+
+async function autoMod(args) {
+    const { client, body } = args;
+    const { event } = body;
+    let { type, subtype, user, channel, ts, text } = event;
+
+
+
 
 const bannedWords = process.env.BANNED_WORDS
   ? process.env.BANNED_WORDS.split(',').map(w => w.trim().toLowerCase())
@@ -8,7 +17,6 @@ const bannedWords = process.env.BANNED_WORDS
 const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(process.env.AIRTABLE_BASE_ID);
 const airtableTable = process.env.AIRTABLE_TABLE;
 
-const userSlack = new WebClient(process.env.SLACK_APP_TOKEN);
 
 let botUserId;
 
@@ -21,15 +29,14 @@ async function initBotUserId(client) {
   }
 }
 
-module.exports = async function autoMod({ body, client }) {
-  const event = body.event;
+
   if (!event || event.type !== 'message' || event.subtype) return;
 
   await initBotUserId(client);
 
   if (event.user === botUserId) return;
 
-  const text = event.text?.toLowerCase();
+  text = text?.toLowerCase();
   if (!text) return;
 
   const matchedWords = bannedWords.filter(word => text.includes(word));
@@ -41,19 +48,26 @@ module.exports = async function autoMod({ body, client }) {
       message_ts: event.ts,
     });
 
+    
+
+
     const userInfoRes = await client.users.info({ user: event.user });
     const username = userInfoRes.user?.real_name || userInfoRes.user?.name || `<@${event.user}>`;
 
     await client.chat.postMessage({
-      channel: 'C07FL3G62LF',
+      channel: process.env.MIRRORCHANNEL,
       text: `:siren-real: Message "${event.text}" auto deleted in <#${event.channel}>. It was sent by: <@${event.user}>. :siren-real: \n 🔗 ${permalinkRes.permalink} \n Reply with :white_check_mark: once dealt with.`
     });
 
-    await userSlack.chat.delete({
-      channel: event.channel,
-      ts: event.ts
-    });
 
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+await client.chat.delete({
+      channel: event.channel,
+      ts: event.ts,
+      token: process.env.SLACK_USER_TOKEN
+    });
+    
     await client.chat.postEphemeral({
       channel: event.channel,
       user: event.user,
@@ -81,5 +95,16 @@ module.exports = async function autoMod({ body, client }) {
       "Message": event.text
     });
 
-  } catch (err) {}
+  } catch (err) {
+    console.error('Error in autoMod:', err);
+    await client.chat.postEphemeral({
+      channel: event.channel,
+      user: event.user,
+      text: `An error occurred while processing your message. Please try again later${err.message ? `: ${err.message}` : ''}`
+    });
+  }
 };
+
+module.exports = autoMod;
+
+

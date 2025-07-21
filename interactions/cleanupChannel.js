@@ -16,7 +16,7 @@ async function cleanupChannel(args) {
 
     const userInfo = await client.users.info({ user: user })
     const isAdmin = userInfo.user.is_admin || userInfo.user.is_owner;
-    console.log("isAdmin", isAdmin)
+    // console.log("isAdmin", isAdmin)
 
     if (isAdmin) return;
 
@@ -28,9 +28,9 @@ async function cleanupChannel(args) {
             readOnly: true,
         }
     });
-    console.log(getChannel)
+    // console.log(getChannel)
 
-    console.log("User:", user, "Channel:", channel, "Thread TS:", thread_ts, "Message TS:", ts, "Subtype:", subtype);
+    // console.log("User:", user, "Channel:", channel, "Thread TS:", thread_ts, "Message TS:", ts, "Subtype:", subtype);
 
     console.log("Checking if user is allowed in channel:", channel, "User:", user);
     const allowlist = await prisma.Channel.findFirst({
