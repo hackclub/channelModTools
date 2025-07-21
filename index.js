@@ -1,38 +1,27 @@
 const { App, LogLevel, ExpressReceiver } = require("@slack/bolt");
 require("dotenv").config();
-const { getPrisma } = require("./utils/prismaConnector.js");
+const { getPrisma } = require('./utils/prismaConnector.js');
 const prisma = getPrisma();
-const express = require("express");
+const express = require('express')
 
-// Determine if we're in development mode
-const isDev = process.env.NODE_ENV === 'development';
 
-if (isDev) {
-    console.log(process.env.SLACK_BOT_TOKEN);
-    console.log(process.env.SLACK_SIGNING_SECRET);
-    console.log(process.env.MIRRORCHANNEL + "hi");
-}
+const receiver = new ExpressReceiver({
+  signingSecret: process.env.SLACK_SIGNING_SECRET,
+})
 
-// Create receiver for production mode
-const receiver = !isDev ? new ExpressReceiver({
-    signingSecret: process.env.SLACK_SIGNING_SECRET,
-}) : undefined;
 
 const app = new App({
     token: process.env.SLACK_BOT_TOKEN,
     signingSecret: process.env.SLACK_SIGNING_SECRET,
-    ...(receiver && { receiver }),
-    socketMode: isDev, // true in dev, false in production
+    receiver,
+    socketMode: false,
     appToken: process.env.SLACK_APP_TOKEN,
     port: process.env.PORT || 3000,
 });
 
-// Only set up express routes in production
-if (!isDev && receiver) {
-    receiver.router.use(express.json());
-    receiver.router.get('/', require('./endpoints/index'));
-    receiver.router.get('/ping', require('./endpoints/ping'));
-}
+receiver.router.use(express.json())
+receiver.router.get('/', require('./endpoints/index'))
+receiver.router.get('/ping', require('./endpoints/ping'))
 
 app.client.chat.postMessage({
     channel: process.env.MIRRORCHANNEL,
@@ -47,27 +36,25 @@ app.event("channel_created", async ({ event, client }) => {
         app.logger.error(e)
     } 
 });
+
+
+
 app.event('message', async (args) => {
-    console.log("Message event received");
     // begin the firehose
-    const { body, client } = args;
-    const { event } = body;
-    // const { type, subtype, user, channel, ts, text } = event;
+    const { body, client } = args
+    const { event } = body
+    const { type, subtype, user, channel, ts, text } = event
 
     const cleanupChannel = await require("./interactions/cleanupChannel.js");
     await cleanupChannel(args);
-
     const shushBan = await require("./interactions/listenforBannedUser.js");
     await shushBan(args);
-
     const startSlowMode = await require("./interactions/startSlowMode.js");
     await startSlowMode(args);
-
     const listenforChannelBannedUser = await require("./interactions/listenforChannelBannedUser.js");
     await listenforChannelBannedUser(args);
 
-    const autoMod = await require("./interactions/autoMod.js");
-    await autoMod(args);
+
 });
 
 const handleEvent = require("./events/index.js");
