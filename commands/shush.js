@@ -52,7 +52,6 @@ async function shushBan(args) {
         text: "You've been banned from talking in all Slack channels for a short period of time. A FD member will reach out to you shortly.",
       });
     }
-    console.log(`Banned user ${userToBan} for reason: ${reason}`);
 
     if (isSelfShush) {
       await client.chat.postEphemeral({
