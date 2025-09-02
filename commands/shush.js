@@ -15,10 +15,9 @@ async function shushBan(args) {
   // const profilePhoto = userProfile.profile.image_512;
   // const displayName = userProfile.profile.display_name;
 
-  const isSelfShush = userToBan === user_id;
   const errors = [];
-  if (!isAdmin && !isSelfShush) errors.push("Non-admins can only shush themselves.");
-  if (!reason && !isSelfShush) errors.push("A reason is required.");
+  if (!isAdmin) errors.push("Non-admins can only shush themselves.");
+  if (!reason) errors.push("A reason is required.");
   if (!userToBan) errors.push("A user is required");
 
   if (errors.length > 0)
@@ -28,7 +27,7 @@ async function shushBan(args) {
     });
 
   try {
-    if (!isSelfShush) {
+    if (isAdmin) {
       await client.chat.postMessage({
         channel: process.env.MIRRORCHANNEL,
         text: `<@${user_id}> banned <@${userToBan}> from all Slack channels. ${reason ? `for ${reason}` : ""}`,
@@ -46,14 +45,14 @@ async function shushBan(args) {
       },
     });
 
-    if (!isSelfShush) {
+    if (isAdmin) {
       await client.chat.postMessage({
         channel: userToBan,
         text: "You've been banned from talking in all Slack channels for a short period of time. A FD member will reach out to you shortly.",
       });
     }
 
-    if (isSelfShush) {
+    if (isAdmin) {
       await client.chat.postEphemeral({
         channel: channel_id,
         user: user_id,
